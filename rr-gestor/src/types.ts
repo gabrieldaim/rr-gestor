@@ -1,20 +1,52 @@
 // src/types.ts
 
-export type trabalho = {
+import { EntregaStatusType } from "./lib/utils/types/EntregaStatus";
+
+export type proxTrabalhosType = {
     id: string;
-    nome: String;
+    nome: string;
     tema: string;
     tipoTrabalho: string;
     proxPrazo: string;
-    statusEntrega: StatusEntrega;
+    statusEntrega: EntregaStatusType;
     email: string;
   };
   
-  export enum StatusEntrega {
-    NAO_INICIADA,
-    EM_ANDAMENTO,
-    CONCLUIDA,
-    EM_REVISAO,
-    ATRASADA,
-  }
+  export type EntregaType = {
+    id: number;
+    nome: string;
+    data: string;
+    status: string;
+  };
+
+  export type ParcelaType = {
+    id: number;
+    nome: string;
+    valor: number;
+    data: string;
+    status: string;
+  };
+
+  export type TrabalhoType = {
+    id: number;
+    responsavelEmail: string;
+    nomeResponsavel: string;
+    clienteId: number;
+    nome: string;
+    email: string;
+    telefone: string;
+    tipoTrabalho: string;
+    faculdade: string;
+    curso: string;
+    tema: string;
+    caminhoPendrive: string;
+    caminhoDrive: string;
+    observacao: string;
+    valorTotal: number;
+    statusEntregas: string;
+    statusParcelas: string;
+    tipoPagamento: string | null;
+    entregas: EntregaType[];
+    parcelas: ParcelaType[];
+  };
   
