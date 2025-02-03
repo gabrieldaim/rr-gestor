@@ -1,33 +1,33 @@
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Divide,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Settings2,
-  SquareTerminal,
+//   AudioWaveform,
+//   BookOpen,
+//   Bot,
+//   Command,
+//   Divide,
+//   Frame,
+//   GalleryVerticalEnd,
+//   Map,
+//   PieChart,
+//   Settings2,
+//   SquareTerminal,
   BookOpenText,
   LibraryBig,
   Wallet
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
+// import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+// import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
+  // SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { DropdownMenuSeparator, Separator } from "@radix-ui/react-dropdown-menu";
+// import { DropdownMenuSeparator, Separator } from "@radix-ui/react-dropdown-menu";
 
 // This is sample data.
 const userDataString = localStorage.getItem('userData');

@@ -7,7 +7,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { login } from "../req/Auth/login";
 import { showToast, UtilToast } from "../UtilToast";
-import { Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 
 //Constante que valida o schema do formulário de login
 const handleLoginSchema = z.object({
@@ -26,7 +26,7 @@ export function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<HandleLoginSchema>({
     resolver: zodResolver(handleLoginSchema),
   });

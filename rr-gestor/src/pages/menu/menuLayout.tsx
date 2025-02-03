@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/sidebar"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useLocation } from 'react-router-dom';
-import Home from "../home/home";
+// import Home from "../home/home";
 
 
 export default function MenuLayout() {

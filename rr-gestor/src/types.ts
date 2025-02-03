@@ -49,4 +49,20 @@ export type proxTrabalhosType = {
     entregas: EntregaType[];
     parcelas: ParcelaType[];
   };
+
+  export type ClientesResumoType = {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+    ultimoTrabalho: string;
+    tipoCliente: string;
+  }
+
+  export type ResponsavelType = {
+    id: string;
+    nome: string;
+    email: string;
+
+  }
   

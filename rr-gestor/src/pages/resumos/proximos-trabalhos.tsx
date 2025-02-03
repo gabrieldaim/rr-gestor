@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { getProxTrabalhos } from "@/lib/utils/req/resumos/proxEntregas";
 import TableProxTrabalhos from "@/lib/utils/tables/tableProxEntregaResumo";
 import { proxTrabalhosType } from "@/types";
-import { Plus, PlusCircle, PlusCircleIcon } from "lucide-react";
+import { Plus } from "lucide-react";
 import React from "react";
 
 export default function ProximosTrabalhos() {
