@@ -25,7 +25,7 @@ const Trabalho = () => {
   Visualizar trabalho
 </h2>
       {trabalho ? (
-        <TrabalhoForm trabalho={trabalho} setTrabalho={setTrabalho}/>
+        <TrabalhoForm trabalho={trabalho} setTrabalho={setTrabalho} tipoTrabalhoForm='edicao'/>
 ) : (
         <></>
       )}

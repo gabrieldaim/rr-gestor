@@ -1,24 +1,24 @@
 import { Table, TableBody, TableHead, TableRow, TableCell, TableHeader } from "@/components/ui/table";
-import { proxTrabalhosType } from "@/types";
-import FilterFormEntregas from "../Form/filterFormEntregas";
+import { proxParcelaTrabalhosType } from "@/types";
 import { useState } from "react";
-import { EntregaStatus, EntregaStatusType } from "../types/EntregaStatus";
 import { TipoTrabalho, TipoTrabalhoType } from "../types/TipoTrabalho";
 import { useNavigate } from "react-router-dom";
 import { corrigirFusoData } from "@/lib/utils";
+import { ParcelaStatus, ParcelaStatusType } from "../types/ParcelaStatus";
+import FilterFormParcelas from "../Form/filterFormParcelas";
 
 
-interface TableProxTrabalhosProps {
-  data: proxTrabalhosType[];
+interface TableProxParcelasProps {
+  data: proxParcelaTrabalhosType[];
 }
 
-export default function TableProxTrabalhos({ data }: TableProxTrabalhosProps) {
+export default function TableProxParcelas({ data }: TableProxParcelasProps) {
   const [filteredData, setFilteredData] = useState(data);
 
   const navigate = useNavigate();
 
-  const handleFilterChange = (filters: { nome: string; tema: string,  statusEntrega: EntregaStatusType | "TODOS", tipoTrabalho: TipoTrabalhoType | "TODOS"}) => {
-    const { nome, tema , statusEntrega, tipoTrabalho } = filters;
+  const handleFilterChange = (filters: { nome: string; tema: string,  statusParcelas: ParcelaStatusType | "TODOS", tipoTrabalho: TipoTrabalhoType | "TODOS"}) => {
+    const { nome, tema , statusParcelas, tipoTrabalho } = filters;
 
     const nomeTrimmed = nome.trim();
     const temaTrimmed = tema.trim();
@@ -27,7 +27,7 @@ export default function TableProxTrabalhos({ data }: TableProxTrabalhosProps) {
       (trabalho) =>
         (!nomeTrimmed || trabalho.nome.toLowerCase().includes(nomeTrimmed.toLowerCase())) &&
         (!temaTrimmed || trabalho.tema.toLowerCase().includes(temaTrimmed.toLowerCase())) &&
-        (statusEntrega === "TODOS" || trabalho.statusEntrega === statusEntrega) &&
+        (statusParcelas === "TODOS" || trabalho.statusParcela === statusParcelas) &&
         (tipoTrabalho === "TODOS" || trabalho.tipoTrabalho === tipoTrabalho)
     );
     setFilteredData(filtered);
@@ -39,7 +39,7 @@ export default function TableProxTrabalhos({ data }: TableProxTrabalhosProps) {
   return (
     <div className="p-6  mx-auto space-y-4">
               
-          <FilterFormEntregas onFilterChange={handleFilterChange} />
+          <FilterFormParcelas onFilterChange={handleFilterChange} />
 
       <div className="border rounded">
 
@@ -49,7 +49,7 @@ export default function TableProxTrabalhos({ data }: TableProxTrabalhosProps) {
               <TableHead>Nome</TableHead>
               <TableHead>Tema</TableHead>
               <TableHead>Tipo de Trabalho</TableHead>
-              <TableHead>Próximo Prazo</TableHead>
+              <TableHead>Próximo Pagamento</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
@@ -61,7 +61,7 @@ export default function TableProxTrabalhos({ data }: TableProxTrabalhosProps) {
                               <TableCell>{trabalho.tema}</TableCell>
                               <TableCell>{TipoTrabalho[trabalho.tipoTrabalho as keyof typeof TipoTrabalho]}</TableCell>
                               <TableCell>{corrigirFusoData(trabalho.proxPrazo).toLocaleDateString('pt-BR')}</TableCell>
-                              <TableCell>{EntregaStatus[trabalho.statusEntrega as keyof typeof EntregaStatus]}</TableCell>
+                              <TableCell>{ParcelaStatus[trabalho.statusParcela as keyof typeof ParcelaStatus]}</TableCell>
                             </TableRow>
                           ))
             ) : (<div className="flex h-14 items-center relative left-2">

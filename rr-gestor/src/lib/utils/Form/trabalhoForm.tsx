@@ -4,6 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { motion } from "framer-motion";
+
+import { showToast, UtilToast } from "../UtilToast";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -13,15 +17,21 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { EntregaType, TrabalhoType } from "@/types";
+import { EntregaType, ParcelaType, TrabalhoType } from "@/types";
 import { ComboBoxCliente } from "@/components/comboBoxCliente";
 import { Input } from "@/components/ui/input";
 import { ComboBoxResponsavel } from "@/components/comboBoxResponsavel";
-import { formatarTelefone } from "@/lib/utils";
+import { formatarParaReal, formatarTelefone, preventEnter } from "@/lib/utils";
 import { ComboboxTipoTrabalho } from "@/components/comboBoxTipoTrabalho";
-import { ChevronDown, ChevronsUpDown, ExternalLink } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronsUpDown,
+  ExternalLink,
+  Loader2,
+  PlusIcon,
+} from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,14 +39,40 @@ import {
 } from "@/components/ui/collapsible";
 import { EntregaStatus, EntregaStatusType } from "../types/EntregaStatus";
 import EntregaForm from "./entregaForm";
+import ParcelaForm from "./parcelaForm";
+import { Select } from "@radix-ui/react-select";
+import SelectTipoPagamento from "@/components/selectTipoPagamento";
+import { tr } from "date-fns/locale";
+import { TipoPagamentoType } from "../types/TipoPagamento";
+import { useState } from "react";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { createTrabalho, updateTrabalho, deleteTrabalho } from "../req/trabalho/trabalho";
+import { useNavigate } from "react-router-dom";
+import DialogConfirm from "@/components/dialogConfirmUtil";
+
 
 const entregaSchema = z.object({
-  id: z.number(),
-  nome: z.string().min(1, { message: "Nome é obrigatório." }),
-  data: z.string().refine((val) => !isNaN(Date.parse(val)), {
-    message: "Data inválida.",
-  }),
-  status: z.string().min(1, { message: "Status é obrigatório." }),
+  id: z.number().optional().nullable(),
+  nome: z.string().min(2,{ message: "Nome é obrigatório." }),
+  data: z.string().min(2,{ message: "Data é obrigatória." }),
+  status: z.string().min(2,{ message: "Status é obrigatório." }),
+});
+
+const parcelaSchema = z.object({
+  id: z.number().optional().nullable(),
+  nome: z.string().min(2, { message: "Nome é obrigatório." }),
+  data: z.string().min(2, { message: "Data é obrigatória." }),
+  status: z.string().min(2, { message: "Status é obrigatório." }),
+  valor: z.number().min(1, { message: "Valor é obrigatório." }),
 });
 
 const formSchema = z.object({
@@ -46,55 +82,129 @@ const formSchema = z.object({
   responsavelEmail: z.string().email({ message: "E-mail inválido." }),
   tema: z.string().min(2, { message: "Tema é obrigatório." }),
   faculdade: z.string().min(2, { message: "Faculdade é obrigatória." }),
-  tipoTrabalho: z.string().min(2, { message: "Tipo de trabalho é obrigatório." }),
+  tipoTrabalho: z
+    .string()
+    .min(2, { message: "Tipo de trabalho é obrigatório." }),
   curso: z.string().min(2, { message: "Curso é obrigatório." }),
   caminhoPendrive: z.string().optional(),
   caminhoDrive: z.string().optional(),
   observacao: z.string().optional(),
-  entregas: z.array(entregaSchema).optional().refine((val) => val as unknown as EntregaType, {
-    message: "Entregas inválidas.",
-  }),
+  tipoPagamento: z.string().optional(),
+  valorTotal: z.number().optional(),
+  entregas: z
+    .array(entregaSchema)
+    .optional()
+    .refine((val) => (val ?? []).every((entrega) => entregaSchema.safeParse(entrega).success), {
+      message: "Um dos campos da entrega está vazio",
+    }),
+  parcelas: z
+    .array(parcelaSchema)
+    .optional()
+    .refine((val) => (val ?? []).every((parcela) => parcelaSchema.safeParse(parcela).success), {
+      message: "Um dos campos da parcela está vazio",
+    }),
 });
 
 export default function TrabalhoForm({
   trabalho,
   setTrabalho,
+  tipoTrabalhoForm,
 }: {
-  trabalho: TrabalhoType;
+  trabalho: TrabalhoType | null;
   setTrabalho: React.Dispatch<React.SetStateAction<TrabalhoType | null>>;
+  tipoTrabalhoForm: "criacao" | "edicao";
 }) {
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      clienteId: trabalho.clienteId,
-      email: trabalho.email,
-      telefone: formatarTelefone(trabalho.telefone),
-      responsavelEmail: trabalho.responsavelEmail,
-      tema: trabalho.tema,
-      faculdade: trabalho.faculdade,
-      tipoTrabalho: trabalho.tipoTrabalho,
-      curso: trabalho.curso,
-      caminhoPendrive: trabalho.caminhoPendrive,
-      caminhoDrive: trabalho.caminhoDrive,
-      observacao: trabalho.observacao,
-      entregas: trabalho.entregas,
+      clienteId: trabalho?.clienteId,
+      email: trabalho?.email,
+      telefone: formatarTelefone(trabalho?.telefone),
+      responsavelEmail: trabalho?.responsavelEmail,
+      tema: trabalho?.tema,
+      faculdade: trabalho?.faculdade,
+      tipoTrabalho: trabalho?.tipoTrabalho,
+      curso: trabalho?.curso,
+      caminhoPendrive: trabalho?.caminhoPendrive,
+      caminhoDrive: trabalho?.caminhoDrive,
+      observacao: trabalho?.observacao,
+      entregas: trabalho?.entregas,
+      parcelas: trabalho?.parcelas,
+      tipoPagamento: trabalho?.tipoPagamento ? String(trabalho?.tipoPagamento) : undefined,
+      valorTotal: trabalho?.valorTotal,
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    let res = null;
+    console.log(tipoTrabalhoForm)
+    console.log(values)
+    if (tipoTrabalhoForm == "edicao") {
+      res = await updateTrabalho(trabalho?.id.toString(), values, setIsLoading);
+    }
+    if (tipoTrabalhoForm == "criacao") {
+      res = await createTrabalho(values, setIsLoading);
+    }
+    console.log(res)
+    if(res?.status == '200'){
+      showToast("success", "Trabalho salvo com sucesso!")
+      navigate("/")
+    }else{
+      console.log("deu erro")
+      showToast("error", "Erro ao salvar o trabalho.")
+    }
 
-    console.log(values);
+  }
+
+  function teste(){
+    console.log("teste")
+  }
+
+  async function handleSubmit() {
+    const isValid = await form.trigger(); // Dispara a validação manualmente
+    console.log("isValid", isValid)
+    if (!isValid) {
+      console.log(form.formState.errors);
+      onError(form.formState.errors);
+      return;
+    }
+  
+    form.handleSubmit(onSubmit, onError)();
+  }
+
+  async function handleDelete(id: String | any) {
+
+    const res = await deleteTrabalho(trabalho?.id.toString(), setIsDeleting);
+    console.log
+    if(res?.status == '200'){
+      showToast("success", "Trabalho deletado com sucesso!")
+      navigate("/")
+    }else{
+      showToast("error", "Erro ao deletar o trabalho.")
+    }
+  }
+
+  function onCancel() {
+    navigate('/')
   }
 
   function onError(errors: any) {
-    const currentValues = form.getValues();
-    console.log("Valores com erros:", currentValues);
+    showToast("error", "Formulário possui valores fora do padrão esperado");
+    Object.values(errors).forEach((error: any) => {
+      if (error?.message) {
+      showToast("error", error.message);
+      }
+    });
     console.log("Erros:", errors);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit, onError)} className="">
+      <UtilToast />
+      <form className="">
         <Collapsible>
           <CollapsibleTrigger asChild className="cursor-pointer">
             <div className="flex gap-2 min-w-[664px]">
@@ -116,7 +226,7 @@ export default function TrabalhoForm({
                       <ComboBoxCliente
                         setTrabalho={setTrabalho}
                         setValue={form.setValue}
-                        id={trabalho.clienteId}
+                        id={trabalho?.clienteId}
                       />
                     </FormControl>
 
@@ -133,9 +243,12 @@ export default function TrabalhoForm({
                     <FormLabel>Email do Cliente</FormLabel>
                     <FormControl>
                       <Input
-                        value={trabalho.email}
+                        value={trabalho?.email}
                         disabled
                         className="w-[200px]"
+                        onKeyDown={(e) => {
+                          preventEnter(e);
+                        }}
                       />
                     </FormControl>
 
@@ -152,9 +265,12 @@ export default function TrabalhoForm({
                     <FormLabel>Telefone do Cliente</FormLabel>
                     <FormControl>
                       <Input
-                        value={formatarTelefone(trabalho.telefone)}
+                        value={formatarTelefone(trabalho?.telefone)}
                         disabled
                         className="w-[200px]"
+                        onKeyDown={(e) => {
+                          preventEnter(e);
+                        }}
                       />
                     </FormControl>
 
@@ -173,7 +289,7 @@ export default function TrabalhoForm({
                       <ComboBoxResponsavel
                         setTrabalho={setTrabalho}
                         setValue={form.setValue}
-                        email={trabalho.responsavelEmail}
+                        email={trabalho?.responsavelEmail}
                       />
                     </FormControl>
 
@@ -189,7 +305,7 @@ export default function TrabalhoForm({
           <CollapsibleTrigger asChild>
             <div className="flex gap-2 min-w-[664px]">
               <h2 className="text-base font-normal leading-none tracking-tight text-muted-foreground flex-shrink-0 mt-8">
-              Informações gerais do trabalho
+                Informações gerais do trabalho
               </h2>
               <ChevronDown className="w-5 h-5 mt-8"></ChevronDown>
             </div>
@@ -205,12 +321,15 @@ export default function TrabalhoForm({
                     <FormControl>
                       <Input
                         {...field}
-                        value={trabalho.tema}
+                        value={trabalho?.tema}
                         onChange={(e) => {
                           setTrabalho((prev) =>
                             prev ? { ...prev, tema: e.target.value } : prev
                           );
                           field.onChange(e);
+                        }}
+                        onKeyDown={(e) => {
+                          preventEnter(e);
                         }}
                       />
                     </FormControl>
@@ -228,12 +347,15 @@ export default function TrabalhoForm({
                     <FormControl>
                       <Input
                         {...field}
-                        value={trabalho.faculdade}
+                        value={trabalho?.faculdade}
                         onChange={(e) => {
                           setTrabalho((prev) =>
                             prev ? { ...prev, faculdade: e.target.value } : prev
                           );
                           field.onChange(e);
+                        }}
+                        onKeyDown={(e) => {
+                          preventEnter(e);
                         }}
                       />
                     </FormControl>
@@ -251,12 +373,15 @@ export default function TrabalhoForm({
                     <FormControl>
                       <Input
                         {...field}
-                        value={trabalho.curso}
+                        value={trabalho?.curso}
                         onChange={(e) => {
                           setTrabalho((prev) =>
                             prev ? { ...prev, curso: e.target.value } : prev
                           );
                           field.onChange(e);
+                        }}
+                        onKeyDown={(e) => {
+                          preventEnter(e);
                         }}
                       />
                     </FormControl>
@@ -277,7 +402,7 @@ export default function TrabalhoForm({
                       <ComboboxTipoTrabalho
                         setTrabalho={setTrabalho}
                         setValue={form.setValue}
-                        tipoTrabalhoOld={trabalho.tipoTrabalho}
+                        tipoTrabalhoOld={trabalho?.tipoTrabalho}
                       />
                     </FormControl>
 
@@ -295,7 +420,7 @@ export default function TrabalhoForm({
                     <FormControl>
                       <Input
                         {...field}
-                        value={trabalho.caminhoPendrive}
+                        value={trabalho?.caminhoPendrive}
                         onChange={(e) => {
                           setTrabalho((prev) =>
                             prev
@@ -303,6 +428,9 @@ export default function TrabalhoForm({
                               : prev
                           );
                           field.onChange(e);
+                        }}
+                        onKeyDown={(e) => {
+                          preventEnter(e);
                         }}
                       />
                     </FormControl>
@@ -321,7 +449,7 @@ export default function TrabalhoForm({
                       <>
                         <Input
                           {...field}
-                          value={trabalho.caminhoDrive}
+                          value={trabalho?.caminhoDrive}
                           onChange={(e) => {
                             setTrabalho((prev) =>
                               prev
@@ -330,11 +458,14 @@ export default function TrabalhoForm({
                             );
                             field.onChange(e);
                           }}
+                          onKeyDown={(e) => {
+                            preventEnter(e);
+                          }}
                         />
                         <button
                           type="button"
                           onClick={() =>
-                            window.open(trabalho.caminhoDrive, "_blank")
+                            window.open(trabalho?.caminhoDrive, "_blank")
                           }
                           className="absolute top-[42px] right-2 transform -translate-y-1/2 text-blue-500 hover:text-blue-700"
                         >
@@ -356,7 +487,7 @@ export default function TrabalhoForm({
                     <FormControl>
                       <Textarea
                         {...field}
-                        value={trabalho.observacao}
+                        value={trabalho?.observacao}
                         onChange={(e) => {
                           setTrabalho((prev) =>
                             prev
@@ -377,17 +508,17 @@ export default function TrabalhoForm({
         </Collapsible>
         <div className="w-full border-t border-gray-300 my-4"></div>
         <Collapsible>
-                <CollapsibleTrigger asChild>
-                <div className="flex gap-2 min-w-[664px]">
+          <CollapsibleTrigger asChild>
+            <div className="flex gap-2 min-w-[664px]">
               <h2 className="text-base font-normal leading-none tracking-tight text-muted-foreground flex-shrink-0 mt-8">
-              Informações sobre as entregas
+                Informações sobre as entregas
               </h2>
               <ChevronDown className="w-5 h-5 mt-8"></ChevronDown>
             </div>
-                </CollapsibleTrigger>
+          </CollapsibleTrigger>
           <CollapsibleContent>
-          <div className="flex gap-8 flex-wrap mt-4">
-          <FormField
+            <div className="flex gap-8 flex-wrap mt-4">
+              <FormField
                 control={form.control}
                 name="entregas"
                 render={({ field }) => (
@@ -396,11 +527,13 @@ export default function TrabalhoForm({
                     <FormControl>
                       <EntregaForm
                         {...field}
-                        entregas={trabalho.entregas ?? []}
+                        entregas={trabalho?.entregas ?? []}
                         setTrabalho={setTrabalho}
                         setValue={form.setValue}
                         onChange={(novasEntregas: EntregaType[]) => {
-                          console.log("novasEntregas:", novasEntregas);
+                          setTrabalho((prev) =>
+                            prev ? { ...prev, entregas: novasEntregas } : prev
+                          );
                           field.onChange(novasEntregas); // Atualiza o estado do formulário
                           form.setValue("entregas", novasEntregas); // Atualiza explicitamente o valor
                         }}
@@ -411,10 +544,233 @@ export default function TrabalhoForm({
                   </FormItem>
                 )}
               />
-          </div>
+            </div>
+            <Button
+              onClick={(e) => {
+                e.preventDefault()
+                const novasEntregas = [
+                  ...(trabalho?.entregas ?? []),
+                  {
+                    id: null as any,
+                    nome: "",
+                    data: "",
+                    status: "NAO_INICIADA",
+                  },
+                ];
+                setTrabalho((prev) =>
+                  prev ? { ...prev, entregas: novasEntregas } : prev
+                );
+                form.setValue("entregas", novasEntregas);
+              }}
+              variant={"link"}
+              className="p-0 hover:no-underline"
+            >
+              <PlusIcon></PlusIcon>
+              Adicionar nova Entrega
+            </Button>
           </CollapsibleContent>
         </Collapsible>
-        <Button type="submit">Submit</Button>
+        <div className="w-full border-t border-gray-300 my-4"></div>
+        <Collapsible>
+          <CollapsibleTrigger asChild>
+            <div className="flex gap-2 min-w-[664px]">
+              <h2 className="text-base font-normal leading-none tracking-tight text-muted-foreground flex-shrink-0 mt-8">
+                Informações sobre os pagamentos
+              </h2>
+              <ChevronDown className="w-5 h-5 mt-8"></ChevronDown>
+            </div>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <div className="flex gap-8 flex-wrap mt-4">
+              <FormField
+                control={form.control}
+                name="tipoPagamento"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tipo de pagamento</FormLabel>
+                    <FormControl>
+                      <SelectTipoPagamento
+                      value={trabalho?.tipoPagamento ? (trabalho.tipoPagamento as TipoPagamentoType) : "A_VISTA"}
+                      onChange={(newStatus) => {
+                        console.log(newStatus)
+                        setTrabalho((prev) =>
+                        prev ? { ...prev, tipoPagamento: newStatus } : prev
+                        );
+                        field.onChange(newStatus);
+                        form.setValue("tipoPagamento", newStatus);
+                        console.log(form.getValues())
+                      }}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="valorTotal"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Valor total</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Valor da parcela"
+                        type="text"
+                        value={
+                          trabalho?.tipoPagamento === "PARCELADO"
+                            ? formatarParaReal(
+                                trabalho?.parcelas?.reduce(
+                                  (acc, parcela) => acc + parcela.valor,
+                                  0
+                                ) * 100 || 0
+                              )
+                            : formatarParaReal((trabalho?.valorTotal ?? 0) * 100)
+                        }
+                        onChange={(e) => {
+                          console.log("chamou");
+                          if (trabalho?.tipoPagamento !== "PARCELADO") {
+                            const rawValue = e.target.value.replace(/\D/g, ""); // Remove tudo que não for número
+                            const centsValue = parseInt(rawValue, 10) || 0; // Converte para número, garantindo que seja 0 se vazio
+                            setTrabalho((prev) =>
+                              prev
+                                ? { ...prev, valorTotal: centsValue / 100 }
+                                : prev
+                            );
+                            field.onChange(centsValue / 100);
+                            form.setValue("valorTotal", centsValue / 100);
+                          }
+                        }}
+                        className="w-[150px] border p-2"
+                        disabled={trabalho?.tipoPagamento === "PARCELADO"}
+                        onKeyDown={(e) => {
+                          preventEnter(e);
+                        }}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            {trabalho?.tipoPagamento === "PARCELADO" && (
+              <>
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="flex gap-8 flex-wrap mt-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="parcelas"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Lista de Parcelas</FormLabel>
+                        <FormControl>
+                          <ParcelaForm
+                            {...field}
+                            parcelas={trabalho?.parcelas ?? []}
+                            setTrabalho={setTrabalho}
+                            setValue={form.setValue}
+                            onChange={(novasParcelas: ParcelaType[]) => {
+                              const valorTotalParcelas = novasParcelas.reduce(
+                                (acc, parcela) => acc + (parcela.valor || 0),
+                                0
+                              );
+                              setTrabalho((prev) =>
+                                prev
+                                  ? {
+                                      ...prev,
+                                      parcelas: novasParcelas,
+                                      valorTotal: valorTotalParcelas,
+                                    }
+                                  : prev
+                              );
+                              field.onChange(novasParcelas); // Atualiza o estado do formulário
+                              form.setValue("parcelas", novasParcelas); // Atualiza explicitamente o valor
+                              form.setValue("valorTotal", valorTotalParcelas);
+                            }}
+                          />
+                        </FormControl>
+
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </motion.div>
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    const novasParcelas = [
+                      ...(trabalho?.parcelas ?? []),
+                      {
+                        id: null as any,
+                        nome: "",
+                        data: "",
+                        status: "AGUARDANDO_DATA",
+                        valor: 0,
+                      },
+                    ];
+                    setTrabalho((prev) =>
+                      prev ? { ...prev, parcelas: novasParcelas } : prev
+                    );
+                    form.setValue("parcelas", novasParcelas);
+                  }}
+                  variant={"link"}
+                  className="p-0 hover:no-underline"
+                >
+                  <PlusIcon></PlusIcon>
+                  Adicionar novo Pagamento
+                </Button>
+              </>
+            )}
+          </CollapsibleContent>
+        </Collapsible>
+        <div className="mt-8 flex flex-col items-center">
+          <div className="flex gap-4">
+            <Button variant="destructive" className="w-[100px]" type="button" onClick={onCancel}>
+              Cancelar
+            </Button>
+            <DialogConfirm
+            title="Manter alterações?" 
+            description="Deseja sair e salvar as alterações realizadas?" 
+            affirmative="Salvar" 
+            negative="Cancelar" 
+            handleClick={() => handleSubmit()} 
+            isLoading={isLoading}
+            >
+              
+              <Button className="w-[100px]" disabled={isLoading} >
+                  {isLoading && <Loader2 className="animate-spin" />}
+                  {isLoading ? "Salvando..." : "Salvar"}
+              </Button>
+              
+            </DialogConfirm>
+          </div>
+
+          {tipoTrabalhoForm == 'edicao' && (
+            <DialogConfirm
+            title="Deletar trabalho?" 
+            description="Deseja deletar permanentemente esse trabalho? Essa ação não pode ser desfeita." 
+            affirmative="Salvar" 
+            negative="Cancelar" 
+            handleClick={() => handleDelete(trabalho?.id.toString)} 
+            isLoading={isDeleting}
+            >
+              
+              <Button
+                className="w-[216px] text-red-500 hover:text-red-600"
+                variant="ghost"
+              >
+                Deletar trabalho
+              </Button>
+              
+            </DialogConfirm>
+          )}
+        </div>
       </form>
     </Form>
   );

@@ -1,18 +1,18 @@
 
   
-import { ClientesResumoType, TrabalhoType } from '@/types';
+import { proxParcelaTrabalhosType, proxTrabalhosType } from '@/types';
 import axios from 'axios';
 import { handleErrorResponse } from '../Auth/handleErrorResponse';
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL;
 
 
-export const getClienteResumo = async (
+export const getMeusTrabalhos = async (
     onLoading?: (isLoading: boolean) => void
-  ): Promise<ClientesResumoType> => {
+  ): Promise<proxTrabalhosType[]> => {
     try {
       onLoading?.(true); // Inicie o carregamento
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/cliente/todosResumo`, {
+      const response = await axios.get(`${API_URL}/trabalho/todosResumoMeusTrabalhos`, {
         headers: {
           Authorization: `${token}`,
         },
@@ -25,5 +25,5 @@ export const getClienteResumo = async (
     } finally {
       onLoading?.(false); // Finalize o carregamento
     }
-};
-
+  };
+  

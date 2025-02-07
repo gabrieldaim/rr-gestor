@@ -27,7 +27,7 @@ interface ComboboxTipoTrabalho {
   setValue: UseFormSetValue<{
     tipoTrabalho: TipoTrabalhoType;
 }> | any;
-tipoTrabalhoOld: string;
+tipoTrabalhoOld: string | any;
 }
 
 export function ComboboxTipoTrabalho({ setTrabalho, setValue, tipoTrabalhoOld }: ComboboxTipoTrabalho) {
@@ -39,11 +39,9 @@ export function ComboboxTipoTrabalho({ setTrabalho, setValue, tipoTrabalhoOld }:
   const [results, setResults] = React.useState<TipoTrabalhoType[]>([])
 
   React.useEffect(() => {
-    console.log("commandInput:", commandInput);
     const filteredResults = tipoTrabalho.filter((tipo) =>
       tipo.toLowerCase().includes(commandInput.toLowerCase())
     );
-    console.log("filteredResults:", filteredResults);
     setResults(filteredResults);
   }, [commandInput, tipoTrabalho]); // Adicione clientes como dependência para re-filter quando eles mudarem
   

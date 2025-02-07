@@ -1,8 +1,19 @@
+import SelectEntregaStatus from "@/components/selectEntregaStatus";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn, corrigirFusoData, preventEnter } from "@/lib/utils";
 import { EntregaType, TrabalhoType } from "@/types";
+import { Popover } from "@radix-ui/react-popover";
+import { CalendarIcon, RemoveFormattingIcon, Trash2 } from "lucide-react";
 import React from "react";
 import { useEffect } from "react";
 import { UseFormSetValue } from "react-hook-form";
+import { EntregaStatusType } from "../types/EntregaStatus";
+import { ptBR } from "date-fns/locale"; // Importa o locale em português
+
 
 
 interface EntregaFormProps {
@@ -30,40 +41,40 @@ onChange: (e: EntregaType[]) => void;
 export default function EntregaForm({ entregas , setTrabalho , setValue, onChange }: EntregaFormProps) {
     const [entregasAtual, setEntregasAtual] = React.useState<EntregaType[]>([]);
 
-    const handleAddEntrega = (novaEntrega: any) => {
-        const novasEntregas = [...entregas, novaEntrega];
-        onChange(novasEntregas);
-      };
     
-      const handleRemoveEntrega = (index: number) => {
-        console.log("index:", index);
-        const novasEntregas = entregas.filter((entrega) => entrega.id !== index);
-        console.log("novasEntregas:", novasEntregas);
-        onChange(novasEntregas); 
-      };
+    const handleRemoveEntrega = (index: number) => {
+      console.log("chamou")
+      const novasEntregas = [...entregasAtual];
+      novasEntregas.splice(index, 1);
+      setEntregasAtual(novasEntregas);
+      onChange(novasEntregas); 
+    };
 
-      const handleUpdateEntregaNome = () => {
+      const handleUpdateEntrega = () => {
         const novasEntregas = [...entregas];
         onChange(novasEntregas);
       }
-
-      const handleUpdateEntregaData = (index: number, novaEntrega: any) => {
-        const novasEntregas = [...entregas];
-        novasEntregas[index] = novaEntrega;
-        onChange(novasEntregas);
-      }
-
-      const handleUpdateEntregaStatus = (index: number, novaEntrega: any) => {
-        const novasEntregas = [...entregas];
-        novasEntregas[index] = novaEntrega;
-        onChange(novasEntregas);
-      }
-
-    useEffect(() => {
+      useEffect(() => {
         setEntregasAtual(entregas);
         setValue('entregas', entregas);
-        console.log("entregas:", entregas);
+
+
     }, [entregas, setValue]);
+
+      useEffect(() => {
+        console.log("entrou")
+        const sortedEntregas = [...entregas].sort((a, b) => {
+            if (!a.data) return 1;
+            if (!b.data) return -1;
+            return new Date(a.data).getTime() - new Date(b.data).getTime();
+        });
+        console.log(sortedEntregas)
+        setEntregasAtual(sortedEntregas);
+
+
+    }, [entregas]);
+
+
     return (
         <>
         <div className="flex flex-col gap-2">
@@ -81,42 +92,71 @@ export default function EntregaForm({ entregas , setTrabalho , setValue, onChang
             {entregasAtual.map((entrega, index) => (
                     <div key={index} className="flex gap-4">
                         <Input
+                            placeholder="Nome da entrega"
                             type="text"
                             value={entrega.nome}
                             onChange={(e) => {
                                 const updatedEntregas = [...entregasAtual];
                                 updatedEntregas[index].nome = e.target.value;
                                 setEntregasAtual(updatedEntregas);
-                                handleUpdateEntregaNome();
+                                handleUpdateEntrega();
                             }}
                             className="w-[200px] border p-2"
+                            onKeyDown={(e) => {
+                                preventEnter(e)
+                            }}
                         />
-                        <input
-                            type="date"
-                            value={entrega.data}
-                            onChange={(e) => {
-                                handleUpdateEntregaData(entrega.id, e.target.value);
+                                    <Popover>
+                                        <PopoverTrigger asChild>
+                                            <FormControl>
+                                                <Button
+                                                    variant={"outline"}
+                                                    className={cn(
+                                                        "w-[200px] pl-3 text-left font-normal",
+                                                        !entrega.data && "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    {entrega.data ? (corrigirFusoData(entrega.data).toLocaleDateString('pt-BR')
+                                                    ) : (
+                                                        <span>Escolha uma data</span>
+                                                    )}
+                                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </FormControl>
+                                        </PopoverTrigger>
+                                        <PopoverContent className="w-auto p-0" align="start">
+                                            <Calendar
+                                                mode="single"
+                                                selected={corrigirFusoData(entrega.data)}
+                                                onSelect={(date) => {
+                                                    const updatedEntregas = [...entregasAtual];
+                                                    setEntregasAtual(updatedEntregas);
+                                                    if (date) {
+                                                        updatedEntregas[index].data = date.toISOString().split('T')[0];
+                                                        handleUpdateEntrega();
+                                                    }
+                                                }}
+                                                locale={ptBR}
+                                            />
+                                        </PopoverContent>
+                                    </Popover>
+                          <SelectEntregaStatus
+                            value={entrega.status as EntregaStatusType}
+                            onChange={(newStatus) => {
+                                const updatedEntregas = [...entregasAtual];
+                                updatedEntregas[index].status = newStatus;
+                                setEntregasAtual(updatedEntregas);
+                                handleUpdateEntrega();
                             }}
-                            className="w-[200px] border p-2"
-                        />
-                        <select
-                            value={entrega.status}
-                            onChange={(e) => {
-                                
-                                handleUpdateEntregaStatus(entrega.id, e.target.value);
-                            }}
-                            className="w-[200px] border p-2"
+                            width="w-[200px]"
+                          />
+                        
+                        <Button
+                            onClick={() => handleRemoveEntrega(index)}
+                            variant={"ghost"}
                         >
-                            <option value="pendente">Pendente</option>
-                            <option value="concluido">Concluído</option>
-                            <option value="cancelado">Cancelado</option>
-                        </select>
-                        <button
-                            onClick={() => handleRemoveEntrega(entrega.id)}
-                            className="w-[100px] border p-2 bg-red-500 text-white"
-                        >
-                            Remover
-                        </button>
+                            <Trash2 className="text-red-500"/>
+                        </Button>
                     </div>
                 ))}
         </div>

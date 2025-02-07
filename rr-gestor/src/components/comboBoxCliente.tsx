@@ -27,7 +27,7 @@ interface ComboboxClienteProps {
   setValue: UseFormSetValue<{
     clienteId: number;
 }> | any;
-id: number;
+id: number | any;
 }
 
 export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClienteProps) {
@@ -39,11 +39,9 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
   const [results, setResults] = React.useState<ClientesResumoType[]>([])
 
   React.useEffect(() => {
-    console.log("commandInput:", commandInput);
     const filteredResults = clientes.filter((cliente) =>
       cliente.nome.toLowerCase().includes(commandInput.toLowerCase())
     );
-    console.log("filteredResults:", filteredResults);
     setResults(filteredResults);
   }, [commandInput, clientes]); // Adicione clientes como dependência para re-filter quando eles mudarem
   
@@ -67,6 +65,8 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
     setValueAtual(selectedValue)
     setTrabalho((prev) => prev ? { ...prev, clienteId: selectedValue ?? prev.clienteId, email:  cliente.email, telefone: cliente.telefone} : null)
     setValue("clienteId", selectedValue)
+    setValue("email", cliente.email)
+    setValue("telefone", cliente.telefone)
     setOpen(false)
   }
 

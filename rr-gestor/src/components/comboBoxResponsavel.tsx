@@ -27,7 +27,7 @@ interface ComboboxResponsavelProps {
   setValue: UseFormSetValue<{
     responsavelEmail: string;
 }> | any;
-email: string;
+email: string | any;
 }
 
 export function ComboBoxResponsavel({ setTrabalho, setValue, email }: ComboboxResponsavelProps) {
@@ -39,11 +39,9 @@ export function ComboBoxResponsavel({ setTrabalho, setValue, email }: ComboboxRe
   const [results, setResults] = React.useState<ResponsavelType[]>([])
 
   React.useEffect(() => {
-    console.log("commandInput:", commandInput);
     const filteredResults = responsaveis.filter((responsavel) =>
       responsavel.nome.toLowerCase().includes(commandInput.toLowerCase())
     );
-    console.log("filteredResults:", filteredResults);
     setResults(filteredResults);
   }, [commandInput, responsaveis]); // Adicione clientes como dependência para re-filter quando eles mudarem
   

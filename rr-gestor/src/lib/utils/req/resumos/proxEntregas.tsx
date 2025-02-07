@@ -12,7 +12,7 @@ export const getProxTrabalhos = async (
     try {
       onLoading?.(true); // Inicie o carregamento
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${API_URL}/trabalho/todosResumo`, {
+      const response = await axios.get(`${API_URL}/trabalho/todosResumoProxEntregas`, {
         headers: {
           Authorization: `${token}`,
         },

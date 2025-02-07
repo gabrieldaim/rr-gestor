@@ -69,6 +69,7 @@ const data = {
           title: "Novos trabalhos",
           url: "/novos-trabalhos",
         },
+        
       ],
     },
     {
@@ -78,7 +79,7 @@ const data = {
       items: [
         {
           title: "Trabalhos",
-          url: "/trabalhos",
+          url: "/todos-trabalhos",
         },
         {
           title: "Clientes",

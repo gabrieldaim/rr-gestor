@@ -6,7 +6,6 @@ export async function login(email: string, password: string, setIsLoading: (isLo
   setIsLoading(true);
   try {
     const response = await axios.post(`${API_URL}/login`, { email, password });
-    console.log(response.data);
     const { token, ...userData } = response.data;
 
     // Salvar token e dados do usuário localmente de forma segura

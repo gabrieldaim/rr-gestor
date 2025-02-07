@@ -1,30 +1,30 @@
-import SelectEntregaStatus from "@/components/selectEntregaStatus";
 import { Input } from "@/components/ui/input";
 import { useState, useEffect } from "react";
-import { EntregaStatusType } from "../types/EntregaStatus";
 import SelectTipoTrabalho from "@/components/selectTipoTrabalho";
 import { TipoTrabalhoType } from "../types/TipoTrabalho";
+import { ParcelaStatusType } from "../types/ParcelaStatus";
+import SelectParcelaStatus from "@/components/selectParcelaStatus";
 
 interface FilterFormProps {
-  onFilterChange: (filters: { nome: string; tema: string; statusEntrega: EntregaStatusType | "TODOS" , tipoTrabalho: TipoTrabalhoType | "TODOS" }) => void;
+  onFilterChange: (filters: { nome: string; tema: string; statusParcelas: ParcelaStatusType | "TODOS" , tipoTrabalho: TipoTrabalhoType | "TODOS" }) => void;
 }
 
-export default function FilterForm({ onFilterChange }: FilterFormProps) {
+export default function FilterFormParcelas({ onFilterChange }: FilterFormProps) {
   const [nome, setNome] = useState("");
   const [tema, setTema] = useState("");
-  const [statusEntrega, setStatusEntrega] = useState<EntregaStatusType | "TODOS">("TODOS");
+  const [statusParcelas, setStatusParcelas] = useState<ParcelaStatusType | "TODOS">("TODOS");
   const [tipoTrabalho, setTipoTrabalho] = useState<TipoTrabalhoType | "TODOS">("TODOS");
 
 
   // Função para enviar os filtros sempre que um campo mudar
   const handleFilterChange = () => {
-    onFilterChange({ nome, tema, statusEntrega, tipoTrabalho });
+    onFilterChange({ nome, tema, statusParcelas, tipoTrabalho });
   };
 
   // useEffect para disparar o handleFilterChange sempre que um dos valores mudar
   useEffect(() => {
     handleFilterChange();
-  }, [nome, tema, statusEntrega, tipoTrabalho]);
+  }, [nome, tema, statusParcelas, tipoTrabalho]);
 
   return (
     <div className="flex items-center justify-between gap-4">
@@ -52,9 +52,9 @@ export default function FilterForm({ onFilterChange }: FilterFormProps) {
     onChange={(newTipoTrabalho) => setTipoTrabalho(newTipoTrabalho)}
     includeAllOption={true}
   />
-  <SelectEntregaStatus
-    value={statusEntrega}
-    onChange={(newStatus) => setStatusEntrega(newStatus)}
+  <SelectParcelaStatus
+    value={statusParcelas}
+    onChange={(newStatus) => setStatusParcelas(newStatus)}
     includeAllOption={true}
   />
 

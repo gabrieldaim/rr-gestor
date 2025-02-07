@@ -20,6 +20,7 @@ export default function MenuLayout() {
       "/proximas-entregas": "Próximas entregas",
       "/proximos-pagamentos": "Próximos pagamentos",
       "/novos-trabalhos": "Novos trabalhos",
+      "/todos-trabalhos": "Todos os trabalhos",
     };
 
 

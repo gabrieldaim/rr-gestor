@@ -13,7 +13,6 @@ export const UtilToast: React.FC = () => (
 );
 
 export const showToast = (type: 'success' | 'error' | 'warning', text: string) => {
-    console.log('showToast', type, text);
     if (type === 'success') {
         return toast.success(text);
     } else if (type === 'error') {

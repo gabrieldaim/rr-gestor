@@ -17,3 +17,23 @@ export function formatarTelefone(telefone:any) {
     return telefone.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
   }
 }
+
+export function corrigirFusoData(data: string) {
+  const [ano, mes, dia] = data.split("-").map(Number);
+  return new Date(ano, mes - 1, dia);
+}
+
+export function formatarParaReal(valor: number) {
+  const numero = (valor / 100).toFixed(2).replace(".", ",");
+  return `R$ ${numero}`;
+}
+
+export function preventEnter(e: any){
+
+    if (e.key === "Enter") {
+        e.preventDefault(); // Evita que o Enter submeta o formulário
+    }
+}
+
+
+

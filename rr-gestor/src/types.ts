@@ -1,6 +1,8 @@
 // src/types.ts
 
 import { EntregaStatusType } from "./lib/utils/types/EntregaStatus";
+import { ParcelaStatusType } from "./lib/utils/types/ParcelaStatus";
+import { TipoPagamento } from "./lib/utils/types/TipoPagamento";
 
 export type proxTrabalhosType = {
     id: string;
@@ -9,6 +11,16 @@ export type proxTrabalhosType = {
     tipoTrabalho: string;
     proxPrazo: string;
     statusEntrega: EntregaStatusType;
+    email: string;
+  };
+
+  export type proxParcelaTrabalhosType = {
+    id: string;
+    nome: string;
+    tema: string;
+    tipoTrabalho: string;
+    proxPrazo: string;
+    statusParcela: ParcelaStatusType;
     email: string;
   };
   
@@ -45,7 +57,7 @@ export type proxTrabalhosType = {
     valorTotal: number;
     statusEntregas: string;
     statusParcelas: string;
-    tipoPagamento: string | null;
+    tipoPagamento: String | null;
     entregas: EntregaType[];
     parcelas: ParcelaType[];
   };
