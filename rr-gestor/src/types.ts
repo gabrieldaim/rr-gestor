@@ -14,6 +14,15 @@ export type proxTrabalhosType = {
     email: string;
   };
 
+  export type todosClientesType = {
+    id: number;
+    nome: string;
+    email: string;
+    telefone: string;
+    ultimoTrabalho: string;
+    tipoCliente: string;
+  };
+
   export type proxParcelaTrabalhosType = {
     id: string;
     nome: string;
@@ -63,13 +72,27 @@ export type proxTrabalhosType = {
   };
 
   export type ClientesResumoType = {
-    id: number;
+    id: string;
     nome: string;
     email: string;
     telefone: string;
     ultimoTrabalho: string;
     tipoCliente: string;
   }
+
+  export type ClientesType = {
+    id: string;
+    nome: string;
+    email: string;
+    telefone: string;
+    tipoCliente: string;
+    observacao: string;
+    indicadoPorEmail: string | null;
+    indicadoPorNome: string | null;
+    indicadoPorId: string | null;
+  }
+
+
 
   export type ResponsavelType = {
     id: string;

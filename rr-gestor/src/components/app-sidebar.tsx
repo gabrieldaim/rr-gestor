@@ -52,7 +52,7 @@ const data = {
       url: "/resumos",
       icon: BookOpenText,
       isActive: true,
-      items: [
+      items: tipo == "Administrador" ? [
         {
           title: "Meus trabalhos",
           url: "/",
@@ -67,7 +67,13 @@ const data = {
         },
         {
           title: "Novos trabalhos",
-          url: "/novos-trabalhos",
+          url: "/em-construcao",
+        },
+        
+      ] : [
+        {
+          title: "Meus trabalhos",
+          url: "/",
         },
         
       ],
@@ -75,17 +81,23 @@ const data = {
     {
       title: "Tabelas",
       url: "/tabelas",
+      isActive: true,
       icon: LibraryBig,
-      items: [
+      items: tipo == "Administrador" ? [
         {
           title: "Trabalhos",
           url: "/todos-trabalhos",
         },
         {
           title: "Clientes",
-          url: "/clientes",
+          url: "/todos-clientes",
         }
-      ],
+      ] : [
+        {
+          title: "Trabalhos",
+          url: "/todos-trabalhos",
+        }
+      ] ,
     }
   ],
   others: [

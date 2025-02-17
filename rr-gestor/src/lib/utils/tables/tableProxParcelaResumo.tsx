@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { corrigirFusoData } from "@/lib/utils";
 import { ParcelaStatus, ParcelaStatusType } from "../types/ParcelaStatus";
 import FilterFormParcelas from "../Form/filterFormParcelas";
+import { ChevronsDown } from "lucide-react";
 
 
 interface TableProxParcelasProps {
@@ -13,7 +14,11 @@ interface TableProxParcelasProps {
 }
 
 export default function TableProxParcelas({ data }: TableProxParcelasProps) {
+  const constExibData = 10
+  const [exibData, setExibData] = useState(data);
   const [filteredData, setFilteredData] = useState(data);
+  const [qtdExibData, setQtdExibData] = useState(constExibData);
+  const [hasExibData, setHasExibData] = useState(data.length > constExibData);
 
   const navigate = useNavigate();
 
@@ -31,7 +36,20 @@ export default function TableProxParcelas({ data }: TableProxParcelasProps) {
         (tipoTrabalho === "TODOS" || trabalho.tipoTrabalho === tipoTrabalho)
     );
     setFilteredData(filtered);
+    const exibFiltered = filtered.slice(0, qtdExibData)
+    setExibData(exibFiltered)
+    console.log("chamou a mudança de filtro e o hasexibdata é: ", filtered.length > qtdExibData)
+    setHasExibData(filtered.length > qtdExibData)
   };
+
+  const expandExibData = () =>{
+    const newQtdExibData = qtdExibData + constExibData;
+    setQtdExibData(newQtdExibData)
+    const exibFiltered = filteredData.slice(0, newQtdExibData)
+    setExibData(exibFiltered)
+    console.log("chamou a mudança de expandExib e o hasexibdata é: ", filteredData.length > newQtdExibData)
+    setHasExibData(filteredData.length > newQtdExibData)
+  }
 
   const handleClickRow = (id: String) => {
     navigate(`/trabalho/${id}`);
@@ -54,8 +72,8 @@ export default function TableProxParcelas({ data }: TableProxParcelasProps) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredData.length > 0 ? (
-                          filteredData.map((trabalho) => (
+            {exibData.length > 0 ? (
+                          exibData.map((trabalho) => (
                             <TableRow key={trabalho.id} className="hover:cursor-pointer" onClick={() => handleClickRow(trabalho.id)}>
                               <TableCell>{trabalho.nome}</TableCell>
                               <TableCell>{trabalho.tema}</TableCell>
@@ -71,6 +89,7 @@ export default function TableProxParcelas({ data }: TableProxParcelasProps) {
           </TableBody>
         </Table>
       </div>
+      {hasExibData && (<p className="items-center justify-center flex text-sm text-gray-500 cursor-pointer" onClick={expandExibData}>Mostrar mais <ChevronsDown className="w-4"></ChevronsDown></p>)}
     </div>
   );
 }
