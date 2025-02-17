@@ -1,9 +1,8 @@
 "use client"
 
-import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -18,9 +17,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { UseFormSetValue } from "react-hook-form"
+import { cn } from "@/lib/utils"
 import { TipoTrabalho, TipoTrabalhoType } from "@/lib/utils/types/TipoTrabalho"
 import { TrabalhoType } from "@/types"
+import { UseFormSetValue } from "react-hook-form"
 
 interface ComboboxTipoTrabalho {
   setTrabalho: React.Dispatch<React.SetStateAction<TrabalhoType | null>>;
@@ -34,7 +34,6 @@ export function ComboboxTipoTrabalho({ setTrabalho, setValue, tipoTrabalhoOld }:
   const [open, setOpen] = React.useState(false)
   const [valueAtual, setValueAtual] = React.useState<string>(tipoTrabalhoOld); 
   const [tipoTrabalho, setTipoTrabalho] = React.useState<TipoTrabalhoType[]>([]);  
-  const [isLoaded, setIsLoaded] = React.useState(false);
   const [commandInput, setCommandInput] = React.useState<string>("")
   const [results, setResults] = React.useState<TipoTrabalhoType[]>([])
 

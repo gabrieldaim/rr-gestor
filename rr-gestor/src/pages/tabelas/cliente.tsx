@@ -1,8 +1,6 @@
 import ClienteForm from '@/lib/utils/Form/clienteForm';
-import TrabalhoForm from '@/lib/utils/Form/trabalhoForm';
 import { getCliente } from '@/lib/utils/req/cliente/cliente';
-import { getTrabalho } from '@/lib/utils/req/trabalho/trabalho';
-import { ClientesType, TrabalhoType } from '@/types';
+import { ClientesType } from '@/types';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 

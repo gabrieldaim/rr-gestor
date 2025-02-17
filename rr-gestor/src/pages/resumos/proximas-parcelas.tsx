@@ -2,7 +2,7 @@ import LoadingTable from "@/components/loadingTable";
 import { Button } from "@/components/ui/button";
 import { getProxParcelasTrabalhos } from "@/lib/utils/req/resumos/proxParcelas";
 import TableProxParcelas from "@/lib/utils/tables/tableProxParcelaResumo";
-import { proxParcelaTrabalhosType, proxTrabalhosType } from "@/types";
+import { proxParcelaTrabalhosType } from "@/types";
 import { Plus } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";

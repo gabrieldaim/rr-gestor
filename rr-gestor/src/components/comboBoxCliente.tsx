@@ -34,7 +34,6 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
   const [open, setOpen] = React.useState(false)
   const [valueAtual, setValueAtual] = React.useState<number>(id); 
   const [clientes, setClientes] = React.useState<ClientesResumoType[]>([]);  
-  const [isLoaded, setIsLoaded] = React.useState(false);
   const [commandInput, setCommandInput] = React.useState<string>("")
   const [results, setResults] = React.useState<ClientesResumoType[]>([])
 
@@ -50,7 +49,7 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
     const clienteId = valueAtual || 1; 
     setValue("clienteId", clienteId);
     const fetchData = async () => {
-      const data = await getClienteResumo(setIsLoaded);
+      const data = await getClienteResumo();
       setClientes(Array.isArray(data) ? data : [data]); // Defina a variável com o valor correto
       setResults(Array.isArray(data) ? data : [data]); // Defina a variável com o valor correto
     };
@@ -80,7 +79,7 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
           className="w-[200px] justify-between"
         >
           {valueAtual
-            ? clientes.find((cliente) => cliente.id === valueAtual)?.nome
+            ? clientes.find((cliente) => Number(cliente.id) === valueAtual)?.nome
             : "Selecione o cliente..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -99,12 +98,12 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
                 <CommandItem
                   key={cliente.id}
                   value={cliente.id.toString()}
-                  onSelect={() => handleSelect(cliente.id === valueAtual ? valueAtual : cliente.id,cliente)}
+                  onSelect={() => handleSelect(Number(cliente.id) === valueAtual ? valueAtual : Number(cliente.id), cliente)}
                 >
                   <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    valueAtual === cliente.id ? "opacity-100" : "opacity-0"
+                    valueAtual === Number(cliente.id) ? "opacity-100" : "opacity-0"
                   )}
                   />
                   {cliente.nome}

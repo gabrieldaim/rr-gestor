@@ -1,7 +1,6 @@
 import LoadingTable from "@/components/loadingTable";
 import { Button } from "@/components/ui/button";
 import { getMeusTrabalhos } from "@/lib/utils/req/resumos/meusTrabalhos";
-import { getProxTrabalhos } from "@/lib/utils/req/resumos/proxEntregas";
 import TableProxTrabalhos from "@/lib/utils/tables/tableProxEntregaResumo";
 import { proxTrabalhosType } from "@/types";
 import { Plus } from "lucide-react";

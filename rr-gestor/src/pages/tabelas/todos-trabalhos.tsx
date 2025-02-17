@@ -1,6 +1,5 @@
 import LoadingTable from "@/components/loadingTable";
 import { Button } from "@/components/ui/button";
-import { getProxTrabalhos } from "@/lib/utils/req/resumos/proxEntregas";
 import { getTodosTrabalhos } from "@/lib/utils/req/trabalho/trabalho";
 import TableProxTrabalhos from "@/lib/utils/tables/tableProxEntregaResumo";
 import { proxTrabalhosType } from "@/types";

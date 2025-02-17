@@ -1,8 +1,6 @@
 import TrabalhoForm from '@/lib/utils/Form/trabalhoForm';
-import { getTrabalho } from '@/lib/utils/req/trabalho/trabalho';
 import { TrabalhoType } from '@/types';
 import React from 'react';
-import { useParams } from 'react-router-dom';
 
 const CriarTrabalho = () => {
 

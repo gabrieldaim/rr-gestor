@@ -6,9 +6,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select"
-import { EntregaStatus, EntregaStatusType } from "@/lib/utils/types/EntregaStatus"
-import { ParcelaStatus, ParcelaStatusType } from "@/lib/utils/types/ParcelaStatus";
+} from "@/components/ui/select";
 import { TipoPagamento, TipoPagamentoType } from "@/lib/utils/types/TipoPagamento";
 
 interface SelectTipoPagamentoProps {

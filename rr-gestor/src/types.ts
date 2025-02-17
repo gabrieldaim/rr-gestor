@@ -2,7 +2,6 @@
 
 import { EntregaStatusType } from "./lib/utils/types/EntregaStatus";
 import { ParcelaStatusType } from "./lib/utils/types/ParcelaStatus";
-import { TipoPagamento } from "./lib/utils/types/TipoPagamento";
 
 export type proxTrabalhosType = {
     id: string;

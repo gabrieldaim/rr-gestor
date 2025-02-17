@@ -1,9 +1,8 @@
 "use client"
 
-import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -18,9 +17,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { cn } from "@/lib/utils"
+import { getUsuariosResumo } from "@/lib/utils/req/Auth/usuariosResumo"
 import { ResponsavelType, TrabalhoType } from "@/types"
 import { UseFormSetValue } from "react-hook-form"
-import { getUsuariosResumo } from "@/lib/utils/req/Auth/usuariosResumo"
 
 interface ComboboxResponsavelProps {
   setTrabalho: React.Dispatch<React.SetStateAction<TrabalhoType | null>>;
@@ -34,7 +34,6 @@ export function ComboBoxResponsavel({ setTrabalho, setValue, email }: ComboboxRe
   const [open, setOpen] = React.useState(false)
   const [valueAtual, setValueAtual] = React.useState<string>(email); 
   const [responsaveis, setResponsaveis] = React.useState<ResponsavelType[]>([]);  
-  const [isLoaded, setIsLoaded] = React.useState(false);
   const [commandInput, setCommandInput] = React.useState<string>("")
   const [results, setResults] = React.useState<ResponsavelType[]>([])
 
@@ -50,7 +49,7 @@ export function ComboBoxResponsavel({ setTrabalho, setValue, email }: ComboboxRe
     const responsavelEmail = valueAtual || ""; 
     setValue("responsavelEmail", responsavelEmail);
     const fetchData = async () => {
-      const data = await getUsuariosResumo(setIsLoaded);
+      const data = await getUsuariosResumo();
       setResponsaveis(Array.isArray(data) ? data : [data]); // Defina a variável com o valor correto
       setResults(Array.isArray(data) ? data : [data]); // Defina a variável com o valor correto
     };

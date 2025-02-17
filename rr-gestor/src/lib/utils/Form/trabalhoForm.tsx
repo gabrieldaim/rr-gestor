@@ -8,7 +8,17 @@ import { motion } from "framer-motion";
 
 import { showToast, UtilToast } from "../UtilToast";
 
+import { ComboBoxCliente } from "@/components/comboBoxCliente";
+import { ComboBoxResponsavel } from "@/components/comboBoxResponsavel";
+import { ComboboxTipoTrabalho } from "@/components/comboBoxTipoTrabalho";
+import DialogConfirm from "@/components/dialogConfirmUtil";
+import SelectTipoPagamento from "@/components/selectTipoPagamento";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   Form,
   FormControl,
@@ -17,47 +27,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { EntregaType, ParcelaType, TrabalhoType } from "@/types";
-import { ComboBoxCliente } from "@/components/comboBoxCliente";
 import { Input } from "@/components/ui/input";
-import { ComboBoxResponsavel } from "@/components/comboBoxResponsavel";
+import { Textarea } from "@/components/ui/textarea";
 import { formatarParaReal, formatarTelefone, preventEnter } from "@/lib/utils";
-import { ComboboxTipoTrabalho } from "@/components/comboBoxTipoTrabalho";
+import { EntregaType, ParcelaType, TrabalhoType } from "@/types";
 import {
   ChevronDown,
-  ChevronsUpDown,
   ExternalLink,
   Loader2,
-  PlusIcon,
+  PlusIcon
 } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import React, { useEffect } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { EntregaStatus, EntregaStatusType } from "../types/EntregaStatus";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { createTrabalho, deleteTrabalho, updateTrabalho } from "../req/trabalho/trabalho";
+import { TipoPagamentoType } from "../types/TipoPagamento";
 import EntregaForm from "./entregaForm";
 import ParcelaForm from "./parcelaForm";
-import { Select } from "@radix-ui/react-select";
-import SelectTipoPagamento from "@/components/selectTipoPagamento";
-import { tr } from "date-fns/locale";
-import { TipoPagamentoType } from "../types/TipoPagamento";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { createTrabalho, updateTrabalho, deleteTrabalho } from "../req/trabalho/trabalho";
-import { useNavigate } from "react-router-dom";
-import DialogConfirm from "@/components/dialogConfirmUtil";
 
 
 const entregaSchema = z.object({
@@ -159,10 +144,6 @@ export default function TrabalhoForm({
 
   }
 
-  function teste(){
-    console.log("teste")
-  }
-
   async function handleSubmit() {
     const isValid = await form.trigger(); // Dispara a validação manualmente
     console.log("isValid", isValid)
@@ -175,7 +156,7 @@ export default function TrabalhoForm({
     form.handleSubmit(onSubmit, onError)();
   }
 
-  async function handleDelete(id: String | any) {
+  async function handleDelete() {
 
     const res = await deleteTrabalho(trabalho?.id.toString(), setIsDeleting);
     console.log
@@ -757,7 +738,7 @@ export default function TrabalhoForm({
             description="Deseja deletar permanentemente esse trabalho? Essa ação não pode ser desfeita." 
             affirmative="Salvar" 
             negative="Cancelar" 
-            handleClick={() => handleDelete(trabalho?.id.toString)} 
+            handleClick={() => handleDelete()} 
             isLoading={isDeleting}
             >
               

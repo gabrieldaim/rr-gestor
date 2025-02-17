@@ -1,6 +1,5 @@
 import ClienteForm from '@/lib/utils/Form/clienteForm';
-import TrabalhoForm from '@/lib/utils/Form/trabalhoForm';
-import { ClientesType, TrabalhoType } from '@/types';
+import { ClientesType } from '@/types';
 import React from 'react';
 
 const CriarCliente = () => {

@@ -7,12 +7,11 @@ import { PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn, corrigirFusoData, preventEnter } from "@/lib/utils";
 import { EntregaType, TrabalhoType } from "@/types";
 import { Popover } from "@radix-ui/react-popover";
-import { CalendarIcon, RemoveFormattingIcon, Trash2 } from "lucide-react";
-import React from "react";
-import { useEffect } from "react";
+import { ptBR } from "date-fns/locale"; // Importa o locale em português
+import { CalendarIcon, Trash2 } from "lucide-react";
+import React, { useEffect } from "react";
 import { UseFormSetValue } from "react-hook-form";
 import { EntregaStatusType } from "../types/EntregaStatus";
-import { ptBR } from "date-fns/locale"; // Importa o locale em português
 
 
 
@@ -38,7 +37,7 @@ onChange: (e: EntregaType[]) => void;
 
 }
 
-export default function EntregaForm({ entregas , setTrabalho , setValue, onChange }: EntregaFormProps) {
+export default function EntregaForm({ entregas  , setValue, onChange }: EntregaFormProps) {
     const [entregasAtual, setEntregasAtual] = React.useState<EntregaType[]>([]);
 
     

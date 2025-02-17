@@ -4,10 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { motion } from "framer-motion";
 
 import { showToast, UtilToast } from "../UtilToast";
 
+import { ComboBoxIndicado } from "@/components/comboBoxIndicado";
+import DialogConfirm from "@/components/dialogConfirmUtil";
+import SelectTipoCliente from "@/components/selectTipoCliente";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,63 +19,26 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { ClientesType, EntregaType, ParcelaType, proxTrabalhosType, TrabalhoType } from "@/types";
-import { ComboBoxCliente } from "@/components/comboBoxCliente";
 import { Input } from "@/components/ui/input";
-import { ComboBoxResponsavel } from "@/components/comboBoxResponsavel";
-import { corrigirFusoData, formatarParaReal, formatarTelefone, preventEnter } from "@/lib/utils";
-import { ComboboxTipoTrabalho } from "@/components/comboBoxTipoTrabalho";
-import {
-  ChevronDown,
-  ChevronsUpDown,
-  ExternalLink,
-  Loader2,
-  PlusIcon,
-} from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
-import React, { useEffect } from "react";
+import { corrigirFusoData, preventEnter } from "@/lib/utils";
+import { ClientesType, proxTrabalhosType } from "@/types";
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { EntregaStatus, EntregaStatusType } from "../types/EntregaStatus";
-import EntregaForm from "./entregaForm";
-import ParcelaForm from "./parcelaForm";
-import { Select } from "@radix-ui/react-select";
-import SelectTipoPagamento from "@/components/selectTipoPagamento";
-import { tr } from "date-fns/locale";
-import { TipoPagamentoType } from "../types/TipoPagamento";
-import { useState } from "react";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  createTrabalho,
-  updateTrabalho,
-  deleteTrabalho,
-  getTrabalho,
-  getTrabalhoEmail,
-} from "../req/trabalho/trabalho";
+  Loader2
+} from "lucide-react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import DialogConfirm from "@/components/dialogConfirmUtil";
 import {
   createCliente,
   deleteCliente,
   updateCliente,
 } from "../req/cliente/cliente";
-import { ComboBoxIndicado } from "@/components/comboBoxIndicado";
-import SelectTipoCliente from "@/components/selectTipoCliente";
+import {
+  getTrabalhoEmail
+} from "../req/trabalho/trabalho";
+import { EntregaStatus } from "../types/EntregaStatus";
 import { TipoClienteType } from "../types/tipoCliente";
-import TableProxTrabalhos from "../tables/tableProxEntregaResumo";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TipoTrabalho } from "../types/TipoTrabalho";
 
 const formSchema = z.object({
@@ -157,7 +122,7 @@ export default function ClienteForm({
     form.handleSubmit(onSubmit, onError)();
   }
 
-  async function handleDelete(id: String | any) {
+  async function handleDelete() {
     const res = await deleteCliente(cliente?.id.toString(), setIsDeleting);
     if (res?.status == "200") {
       showToast("success", "Cliente deletado com sucesso!");
@@ -423,7 +388,7 @@ export default function ClienteForm({
               description="Deseja deletar permanentemente esse trabalho? Essa ação não pode ser desfeita."
               affirmative="Salvar"
               negative="Cancelar"
-              handleClick={() => handleDelete(cliente?.id.toString)}
+              handleClick={() => handleDelete()}
               isLoading={isDeleting}
             >
               <Button

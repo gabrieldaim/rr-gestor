@@ -1,21 +1,17 @@
-import SelectEntregaStatus from "@/components/selectEntregaStatus";
+import SelectParcelaStatus from "@/components/selectParcelaStatus";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { FormControl } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn, corrigirFusoData, formatarParaReal, preventEnter } from "@/lib/utils";
-import { EntregaType, ParcelaType, TrabalhoType } from "@/types";
+import { ParcelaType, TrabalhoType } from "@/types";
 import { Popover } from "@radix-ui/react-popover";
-import { CalendarIcon, RemoveFormattingIcon, Trash2 } from "lucide-react";
-import React from "react";
-import { useEffect } from "react";
-import { UseFormSetValue } from "react-hook-form";
-import { EntregaStatusType } from "../types/EntregaStatus";
 import { ptBR } from "date-fns/locale"; // Importa o locale em português
-import { format } from "path";
+import { CalendarIcon, Trash2 } from "lucide-react";
+import React, { useEffect } from "react";
+import { UseFormSetValue } from "react-hook-form";
 import { ParcelaStatusType } from "../types/ParcelaStatus";
-import SelectParcelaStatus from "@/components/selectParcelaStatus";
 
 
 
@@ -43,7 +39,7 @@ onChange: (e: ParcelaType[]) => void;
 
 }
 
-export default function ParcelaForm({ parcelas , setTrabalho , setValue, onChange }: parcelaFormProps) {
+export default function ParcelaForm({ parcelas , setValue, onChange }: parcelaFormProps) {
     const [parcelasAtual, setParcelasAtual] = React.useState<ParcelaType[]>([]);
     
     

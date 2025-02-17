@@ -1,6 +1,6 @@
 
   
-import { ClientesResumoType, TrabalhoType } from '@/types';
+import { ClientesResumoType } from '@/types';
 import axios from 'axios';
 import { handleErrorResponse } from '../Auth/handleErrorResponse';
 const API_URL = import.meta.env.VITE_REACT_APP_API_URL;

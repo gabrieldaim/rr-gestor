@@ -1,9 +1,8 @@
 "use client"
 
-import * as React from "react"
 import { Check, ChevronsUpDown } from "lucide-react"
+import * as React from "react"
 
-import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import {
   Command,
@@ -18,9 +17,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { ClientesResumoType, ClientesType, TrabalhoType } from "@/types"
-import { UseFormSetValue } from "react-hook-form"
+import { cn } from "@/lib/utils"
 import { getClienteResumo } from "@/lib/utils/req/cliente/clienteResumo"
+import { ClientesResumoType, ClientesType } from "@/types"
+import { UseFormSetValue } from "react-hook-form"
 
 interface ComboboxClienteProps {
   setCliente: React.Dispatch<React.SetStateAction<ClientesType | null>>;
@@ -34,7 +34,6 @@ export function ComboBoxIndicado({ setCliente, setValue, id }: ComboboxClientePr
   const [open, setOpen] = React.useState(false)
   const [valueAtual, setValueAtual] = React.useState<string>(id); 
   const [clientes, setClientes] = React.useState<ClientesResumoType[]>([]);  
-  const [isLoaded, setIsLoaded] = React.useState(false);
   const [commandInput, setCommandInput] = React.useState<string>("")
   const [results, setResults] = React.useState<ClientesResumoType[]>([])
 
@@ -50,7 +49,7 @@ export function ComboBoxIndicado({ setCliente, setValue, id }: ComboboxClientePr
     const clienteId = valueAtual || 1; 
     setValue("clienteId", clienteId);
     const fetchData = async () => {
-      const data = await getClienteResumo(setIsLoaded);
+      const data = await getClienteResumo();
       setClientes(Array.isArray(data) ? data : [data]); // Defina a variável com o valor correto
       setResults(Array.isArray(data) ? data : [data]); // Defina a variável com o valor correto
     };

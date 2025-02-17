@@ -1,6 +1,6 @@
 import LoadingTable from "@/components/loadingTable";
 import { Button } from "@/components/ui/button";
-import { getClienteResumo, getClienteResumoTable } from "@/lib/utils/req/cliente/clienteResumo";
+import { getClienteResumoTable } from "@/lib/utils/req/cliente/clienteResumo";
 import TableClientes from "@/lib/utils/tables/tableClientes";
 import { ClientesResumoType } from "@/types";
 import { Plus } from "lucide-react";

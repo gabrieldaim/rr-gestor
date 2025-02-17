@@ -1,12 +1,11 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { Button } from "@/components/ui/button"
+import { AppSidebar } from "@/components/app-sidebar";
+import { Button } from "@/components/ui/button";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Outlet, useNavigate } from "react-router-dom"
-import { useLocation } from 'react-router-dom';
+} from "@/components/ui/sidebar";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 // import Home from "../home/home";
 
 
