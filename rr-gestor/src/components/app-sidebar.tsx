@@ -130,7 +130,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
-<img src="../../../public/logo-azul-png.png" className="p-2 h-16 object-contain border-b" />
+<img src="/logo-azul-png.png" className="p-2 h-16 object-contain border-b" />
 
 
       <SidebarContent>

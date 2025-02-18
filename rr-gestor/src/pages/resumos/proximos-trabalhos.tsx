@@ -31,7 +31,7 @@ export default function ProximosTrabalhos() {
         proxTrabalhos && proxTrabalhos.length > 0 ? 
           <TableProxTrabalhos data={proxTrabalhos} /> : 
           <div className="mt-10 flex flex-col items-center justify-center space-y-4 p-6 mx-auto">
-    <img src="../../../public/Empty-amico.svg" alt="tudo vazio por aqui" className="w-[350px]" />
+    <img src="/Empty-amico.svg" alt="tudo vazio por aqui" className="w-[350px]" />
     <h3 className="text-lg font-semibold leading-none tracking-tight text-muted-foreground flex-shrink-0">
       Parece tudo vazio por aqui...</h3>
   </div>}
