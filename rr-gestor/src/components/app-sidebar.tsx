@@ -3,8 +3,10 @@ import { BookOpenText, LibraryBig, Wallet } from "lucide-react";
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarRail } from "@/components/ui/sidebar";
+import { useLocation } from "react-router-dom";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const location = useLocation();
   // Estado para armazenar os dados do usuário
   const [userData, setUserData] = React.useState({
     name: "Usuário",
@@ -23,7 +25,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     } else {
       console.log("Nenhum dado de usuário encontrado no localStorage.");
     }
-  }, []);
+  }, [location.state?.reload]);
 
   // Definição do menu com base nos dados do usuário
   const data = {

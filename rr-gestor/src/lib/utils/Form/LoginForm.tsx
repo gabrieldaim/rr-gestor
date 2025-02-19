@@ -56,7 +56,7 @@ export function LoginForm() {
 
   // Espera a Promise ser resolvida antes de navegar
   checkUserData().then(() => {
-    navigate("/");  // Agora navega após garantir que userData foi carregado
+    navigate("/", { state: { reload: Date.now() } });  // Agora navega após garantir que userData foi carregado
   });
     }
     if (response.status === 400 || response.status === 404) {
