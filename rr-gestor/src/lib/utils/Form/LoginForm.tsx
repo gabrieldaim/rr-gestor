@@ -43,7 +43,22 @@ export function LoginForm() {
     console.log(response);
     if (response.status === 200) {
       showToast("success", "Login realizado com sucesso!");
-      navigate("/");
+  // Função assíncrona que verifica a presença de userData no localStorage
+  const checkUserData = () => {
+    return new Promise<void>((resolve) => {
+      const interval = setInterval(() => {
+        if (localStorage.getItem('userData') !== null) {
+          clearInterval(interval);  // Para o intervalo quando os dados estiverem no localStorage
+          resolve();  // Resolve a Promise quando userData for encontrado
+        }
+      }, 100); // Verifica a cada 100ms
+    });
+  };
+
+  // Espera a Promise ser resolvida antes de navegar
+  checkUserData().then(() => {
+    navigate("/");  // Agora navega após garantir que userData foi carregado
+  });
     }
     if (response.status === 400 || response.status === 404) {
       showToast("error", "Email ou senha incorretos!");
