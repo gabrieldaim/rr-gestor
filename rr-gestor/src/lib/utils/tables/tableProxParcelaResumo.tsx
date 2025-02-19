@@ -38,7 +38,6 @@ export default function TableProxParcelas({ data }: TableProxParcelasProps) {
     setFilteredData(filtered);
     const exibFiltered = filtered.slice(0, qtdExibData)
     setExibData(exibFiltered)
-    console.log("chamou a mudança de filtro e o hasexibdata é: ", filtered.length > qtdExibData)
     setHasExibData(filtered.length > qtdExibData)
   };
 
@@ -47,7 +46,6 @@ export default function TableProxParcelas({ data }: TableProxParcelasProps) {
     setQtdExibData(newQtdExibData)
     const exibFiltered = filteredData.slice(0, newQtdExibData)
     setExibData(exibFiltered)
-    console.log("chamou a mudança de expandExib e o hasexibdata é: ", filteredData.length > newQtdExibData)
     setHasExibData(filteredData.length > newQtdExibData)
   }
 

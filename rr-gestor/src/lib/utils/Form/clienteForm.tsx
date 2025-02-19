@@ -81,20 +81,16 @@ export default function ClienteForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     let res = null;
-    console.log(tipoClienteForm);
-    console.log(values);
     if (tipoClienteForm == "edicao") {
       res = await updateCliente(cliente?.id.toString(), values, setIsLoading);
     }
     if (tipoClienteForm == "criacao") {
       res = await createCliente(values, setIsLoading);
     }
-    console.log(res);
     if (res?.status == "200") {
       showToast("success", "Cliente salvo com sucesso!");
       navigate("/");
     } else {
-      console.log("deu erro");
       if (
         res?.status == "404" &&
         res?.response?.data?.mensagem == "Usuário já cadastrado no sistema"
@@ -112,9 +108,7 @@ export default function ClienteForm({
 
   async function handleSubmit() {
     const isValid = await form.trigger(); // Dispara a validação manualmente
-    console.log("isValid", isValid);
     if (!isValid) {
-      console.log(form.formState.errors);
       onError(form.formState.errors);
       return;
     }
@@ -143,7 +137,6 @@ export default function ClienteForm({
         showToast("error", error.message);
       }
     });
-    console.log("Erros:", errors);
   }
 
     React.useEffect(() => {

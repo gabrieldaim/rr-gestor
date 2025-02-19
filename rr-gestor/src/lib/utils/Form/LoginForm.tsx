@@ -40,7 +40,6 @@ export function LoginForm() {
     }
 
     const response = await login(data.email, data.senha, setIsLoading) as responseType;
-    console.log(response);
     if (response.status === 200) {
       showToast("success", "Login realizado com sucesso!");
   // Função assíncrona que verifica a presença de userData no localStorage

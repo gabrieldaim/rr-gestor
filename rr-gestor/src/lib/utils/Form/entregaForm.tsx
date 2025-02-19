@@ -42,7 +42,6 @@ export default function EntregaForm({ entregas  , setValue, onChange }: EntregaF
 
     
     const handleRemoveEntrega = (index: number) => {
-      console.log("chamou")
       const novasEntregas = [...entregasAtual];
       novasEntregas.splice(index, 1);
       setEntregasAtual(novasEntregas);
@@ -61,13 +60,11 @@ export default function EntregaForm({ entregas  , setValue, onChange }: EntregaF
     }, [entregas, setValue]);
 
       useEffect(() => {
-        console.log("entrou")
         const sortedEntregas = [...entregas].sort((a, b) => {
             if (!a.data) return 1;
             if (!b.data) return -1;
             return new Date(a.data).getTime() - new Date(b.data).getTime();
         });
-        console.log(sortedEntregas)
         setEntregasAtual(sortedEntregas);
 
 

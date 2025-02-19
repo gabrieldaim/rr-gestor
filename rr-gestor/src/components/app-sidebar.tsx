@@ -16,7 +16,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const userDataString = localStorage.getItem("userData");
     if (userDataString) {
       const userDataParsed = JSON.parse(userDataString);
-      console.log("Dados de usuário encontrados no localStorage:", userDataParsed);
       setUserData({
         name: userDataParsed.name,
         tipo: userDataParsed.tipo === "ADMIN" ? "Administrador" : "Auxiliar",

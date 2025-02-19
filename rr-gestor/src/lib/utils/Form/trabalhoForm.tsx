@@ -125,20 +125,17 @@ export default function TrabalhoForm({
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     let res = null;
-    console.log(tipoTrabalhoForm)
-    console.log(values)
+
     if (tipoTrabalhoForm == "edicao") {
       res = await updateTrabalho(trabalho?.id.toString(), values, setIsLoading);
     }
     if (tipoTrabalhoForm == "criacao") {
       res = await createTrabalho(values, setIsLoading);
     }
-    console.log(res)
     if(res?.status == '200'){
       showToast("success", "Trabalho salvo com sucesso!")
       navigate("/")
     }else{
-      console.log("deu erro")
       showToast("error", "Erro ao salvar o trabalho.")
     }
 
@@ -146,9 +143,7 @@ export default function TrabalhoForm({
 
   async function handleSubmit() {
     const isValid = await form.trigger(); // Dispara a validação manualmente
-    console.log("isValid", isValid)
     if (!isValid) {
-      console.log(form.formState.errors);
       onError(form.formState.errors);
       return;
     }
@@ -159,7 +154,6 @@ export default function TrabalhoForm({
   async function handleDelete() {
 
     const res = await deleteTrabalho(trabalho?.id.toString(), setIsDeleting);
-    console.log
     if(res?.status == '200'){
       showToast("success", "Trabalho deletado com sucesso!")
       navigate("/")
@@ -179,7 +173,6 @@ export default function TrabalhoForm({
       showToast("error", error.message);
       }
     });
-    console.log("Erros:", errors);
   }
 
   return (
@@ -573,13 +566,11 @@ export default function TrabalhoForm({
                       <SelectTipoPagamento
                       value={trabalho?.tipoPagamento ? (trabalho.tipoPagamento as TipoPagamentoType) : "A_VISTA"}
                       onChange={(newStatus) => {
-                        console.log(newStatus)
                         setTrabalho((prev) =>
                         prev ? { ...prev, tipoPagamento: newStatus } : prev
                         );
                         field.onChange(newStatus);
                         form.setValue("tipoPagamento", newStatus);
-                        console.log(form.getValues())
                       }}
                       />
                     </FormControl>
@@ -609,7 +600,6 @@ export default function TrabalhoForm({
                             : formatarParaReal((trabalho?.valorTotal ?? 0) * 100)
                         }
                         onChange={(e) => {
-                          console.log("chamou");
                           if (trabalho?.tipoPagamento !== "PARCELADO") {
                             const rawValue = e.target.value.replace(/\D/g, ""); // Remove tudo que não for número
                             const centsValue = parseInt(rawValue, 10) || 0; // Converte para número, garantindo que seja 0 se vazio
