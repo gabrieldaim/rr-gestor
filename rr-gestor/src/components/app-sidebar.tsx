@@ -35,6 +35,7 @@ let userName = "Usuário";
 let tipo = "Auxiliar";
 if (userDataString) {
   const userData = JSON.parse(userDataString); 
+  console.log("Dados de usuário encontrados no localStorage:", userData);
   userName = userData.name; 
   tipo = userData.tipo=="ADMIN" ? "Administrador" : "Auxiliar";
 } else {
