@@ -33,7 +33,7 @@ export const getClienteResumoTable = async (
   try {
     onLoading?.(true); // Inicie o carregamento
     const token = localStorage.getItem('token');
-    const response = await axios.get(`${API_URL}/cliente/listarTodosClientesTable`, {
+    const response = await axios.get(`${API_URL}/cliente/todosResumoTable`, {
       headers: {
         Authorization: `${token}`,
       },
