@@ -141,8 +141,11 @@ export default function ClienteForm({
 
     React.useEffect(() => {
       const fetchData = async () => {
-        const data = await getTrabalhoEmail(cliente?.email);
-        setData(data); // Defina a variável com o valor correto
+        if(tipoClienteForm == "edicao"){
+          const data = await getTrabalhoEmail(cliente?.email);
+          setData(data); // Defina a variável com o valor correto
+        }
+
       };
   
       fetchData();
