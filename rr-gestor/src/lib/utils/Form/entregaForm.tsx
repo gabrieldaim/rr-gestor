@@ -38,14 +38,24 @@ onChange: (e: EntregaType[]) => void;
 }
 
 export default function EntregaForm({ entregas  , setValue, onChange }: EntregaFormProps) {
-    const [entregasAtual, setEntregasAtual] = React.useState<EntregaType[]>([]);
+    const entregaEmpty = {
+        id: null as any,
+        nome: '',
+        data: '',
+        status: 'NAO_INICIADA'
+    }
+    const [entregasAtual, setEntregasAtual] = React.useState<EntregaType[]>([entregaEmpty]);
 
     
     const handleRemoveEntrega = (index: number) => {
       const novasEntregas = [...entregasAtual];
-      novasEntregas.splice(index, 1);
-      setEntregasAtual(novasEntregas);
-      onChange(novasEntregas); 
+      if (novasEntregas.length > 1) {
+        novasEntregas.splice(index, 1);
+        setEntregasAtual(novasEntregas);
+        onChange(novasEntregas);
+      }else{
+        console.log("nada acontece")
+      }
     };
 
       const handleUpdateEntrega = () => {
@@ -53,19 +63,27 @@ export default function EntregaForm({ entregas  , setValue, onChange }: EntregaF
         onChange(novasEntregas);
       }
       useEffect(() => {
-        setEntregasAtual(entregas);
-        setValue('entregas', entregas);
-
+        if (entregas.length > 0) {
+            setEntregasAtual(entregas);
+            setValue('entregas', entregas);
+            
+        }else{
+            setEntregasAtual([entregaEmpty]);
+            setValue('entregas', [entregaEmpty]);
+        }
+       
 
     }, [entregas, setValue]);
 
       useEffect(() => {
-        const sortedEntregas = [...entregas].sort((a, b) => {
-            if (!a.data) return 1;
-            if (!b.data) return -1;
-            return new Date(a.data).getTime() - new Date(b.data).getTime();
-        });
-        setEntregasAtual(sortedEntregas);
+        if (entregas.length > 0){
+            const sortedEntregas = [...entregas].sort((a, b) => {
+                if (!a.data) return 1;
+                if (!b.data) return -1;
+                return new Date(a.data).getTime() - new Date(b.data).getTime();
+            });
+            setEntregasAtual(sortedEntregas);
+        }
 
 
     }, [entregas]);
@@ -148,7 +166,10 @@ export default function EntregaForm({ entregas  , setValue, onChange }: EntregaF
                           />
                         
                         <Button
-                            onClick={() => handleRemoveEntrega(index)}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleRemoveEntrega(index);
+                            }}
                             variant={"ghost"}
                         >
                             <Trash2 className="text-red-500"/>

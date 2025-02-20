@@ -116,7 +116,12 @@ export default function TrabalhoForm({
       caminhoPendrive: trabalho?.caminhoPendrive,
       caminhoDrive: trabalho?.caminhoDrive,
       observacao: trabalho?.observacao,
-      entregas: trabalho?.entregas,
+      entregas: trabalho?.entregas && trabalho.entregas.length > 0 ? trabalho.entregas : [{
+        id: null as any,
+        nome: "",
+        data: "",
+        status: "NAO_INICIADA",
+      }],
       parcelas: trabalho?.parcelas,
       tipoPagamento: trabalho?.tipoPagamento ? String(trabalho?.tipoPagamento) : undefined,
       valorTotal: trabalho?.valorTotal,
@@ -174,6 +179,31 @@ export default function TrabalhoForm({
       }
     });
   }
+
+      React.useEffect(() => {
+        const fetchData = () => {
+            if (!(trabalho?.entregas && trabalho.entregas.length > 0)) {
+              setTrabalho((prev) =>
+                prev
+                  ? {
+                      ...prev,
+                      entregas: [
+                        {
+                          id: null as any,
+                          nome: "",
+                          data: "",
+                          status: "NAO_INICIADA",
+                        },
+                      ],
+                    }
+                  : prev
+              );
+            }
+  
+        };
+    
+        fetchData();
+      }, []);
 
   return (
     <Form {...form}>
