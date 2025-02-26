@@ -2,6 +2,8 @@ import { createRoot } from 'react-dom/client';
 import './index.css';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { Analytics } from "@vercel/analytics/react";
+
 
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/login/page.tsx';
@@ -45,5 +47,6 @@ createRoot(document.getElementById('root')!).render(
 
       </Route>
     </Routes>
+    <Analytics />
   </BrowserRouter>
 );
