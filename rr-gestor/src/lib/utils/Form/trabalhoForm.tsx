@@ -61,7 +61,7 @@ const parcelaSchema = z.object({
 });
 
 const formSchema = z.object({
-  clienteId: z.number().min(2, { message: "Cliente é obrigatório." }),
+  clienteId: z.number({ message: "Cliente é obrigatório." }),
   email: z.string().email({ message: "E-mail inválido." }),
   telefone: z.string().min(2, { message: "Telefone é obrigatório." }),
   responsavelEmail: z.string().email({ message: "E-mail inválido." }),

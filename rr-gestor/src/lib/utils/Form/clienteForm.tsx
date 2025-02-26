@@ -218,17 +218,20 @@ export default function ClienteForm({
                 <FormLabel>Telefone do Cliente</FormLabel>
                 <FormControl>
                   <Input
-                    {...field}
-                    value={cliente?.telefone}
-                    onChange={(e) => {
-                      setCliente((prev) =>
-                        prev ? { ...prev, telefone: e.target.value } : prev
-                      );
-                      field.onChange(e);
-                    }}
-                    onKeyDown={(e) => {
-                      preventEnter(e);
-                    }}
+                  {...field}
+                  value={cliente?.telefone}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d{0,11}$/.test(value)) {
+                    setCliente((prev) =>
+                      prev ? { ...prev, telefone: value } : prev
+                    );
+                    field.onChange(e);
+                    }
+                  }}
+                  onKeyDown={(e) => {
+                    preventEnter(e);
+                  }}
                   />
                 </FormControl>
                 <FormMessage />
@@ -382,7 +385,7 @@ export default function ClienteForm({
           {tipoClienteForm == "edicao" && (
             <DialogConfirm
               title="Deletar trabalho?"
-              description="Deseja deletar permanentemente esse trabalho? Essa ação não pode ser desfeita."
+              description="Deseja deletar permanentemente esse Cliente? Essa ação não pode ser desfeita."
               affirmative="Salvar"
               negative="Cancelar"
               handleClick={() => handleDelete()}

@@ -35,7 +35,7 @@ export default function TableClientes({ data }: TableClientesProps) {
       (cliente) =>
       (!nomeTrimmed || cliente.nome.toLowerCase().includes(nomeTrimmed.toLowerCase())) &&
       (!emailTrimmed || cliente.email.toLowerCase().includes(emailTrimmed.toLowerCase())) &&
-      (!telefoneTrimmed || cliente.telefone.toLowerCase().includes(nomeTrimmed.toLowerCase())) &&
+      (!telefoneTrimmed || cliente.telefone.toLowerCase().includes(telefoneTrimmed.toLowerCase())) &&
       (tipoCliente === "TODOS" || cliente.tipoCliente === tipoCliente)
     )
     setFilteredData(filtered);
