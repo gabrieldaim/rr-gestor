@@ -56,12 +56,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         isActive: true,
         icon: LibraryBig,
         items:
-          userData.tipo === "Administrador"
-            ? [
+          [
                 { title: "Trabalhos", url: "/todos-trabalhos" },
                 { title: "Clientes", url: "/todos-clientes" },
-              ]
-            : [{ title: "Trabalhos", url: "/todos-trabalhos" }],
+          ]
+            
       },
     ],
     others: [
