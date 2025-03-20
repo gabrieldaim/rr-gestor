@@ -21,6 +21,7 @@ import {
 import { ClientesResumoType, TrabalhoType } from "@/types"
 import { UseFormSetValue } from "react-hook-form"
 import { getClienteResumo } from "@/lib/utils/req/cliente/clienteResumo"
+import { truncate } from "fs"
 
 interface ComboboxClienteProps {
   setTrabalho: React.Dispatch<React.SetStateAction<TrabalhoType | null>>;
@@ -78,9 +79,11 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          {valueAtual
-            ? clientes.find((cliente) => Number(cliente.id) === valueAtual)?.nome
-            : "Selecione o cliente..."}
+      {valueAtual
+        ? (clientes.find((cliente) => Number(cliente.id) === valueAtual)?.nome.length > 17
+        ? clientes.find((cliente) => Number(cliente.id) === valueAtual)?.nome.slice(0, 17) + "..."
+        : clientes.find((cliente) => Number(cliente.id) === valueAtual)?.nome)
+        : "Selecione o cliente..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -103,7 +106,8 @@ export function ComboBoxCliente({ setTrabalho, setValue, id }: ComboboxClientePr
                   <Check
                   className={cn(
                     "mr-2 h-4 w-4",
-                    valueAtual === Number(cliente.id) ? "opacity-100" : "opacity-0"
+                    valueAtual === Number(cliente.id) ? "opacity-100" : "opacity-0",
+                    
                   )}
                   />
                   {cliente.nome}

@@ -24,15 +24,17 @@ export default function TableProxTrabalhos({ data }: TableProxTrabalhosProps) {
 
   const navigate = useNavigate();
 
-  const handleFilterChange = (filters: { nome: string; tema: string,  statusEntrega: EntregaStatusType | "TODOS", tipoTrabalho: TipoTrabalhoType | "TODOS"}) => {
-    const { nome, tema , statusEntrega, tipoTrabalho } = filters;
+  const handleFilterChange = (filters: { nome: string; responsavel:String; tema: string,  statusEntrega: EntregaStatusType | "TODOS", tipoTrabalho: TipoTrabalhoType | "TODOS"}) => {
+    const { nome, responsavel, tema , statusEntrega, tipoTrabalho } = filters;
 
     const nomeTrimmed = nome.trim();
+    const responsavelTrimmed = responsavel.trim();
     const temaTrimmed = tema.trim();
 
     const filtered = data.filter(
       (trabalho) =>
       (!nomeTrimmed || trabalho.nome.toLowerCase().includes(nomeTrimmed.toLowerCase())) &&
+      (!responsavelTrimmed || trabalho.responsavel.toLowerCase().includes(responsavelTrimmed.toLowerCase())) &&
       (!temaTrimmed || trabalho.tema.toLowerCase().includes(temaTrimmed.toLowerCase())) &&
       (statusEntrega === "TODOS" || trabalho.statusEntrega === statusEntrega) &&
       (tipoTrabalho === "TODOS" || trabalho.tipoTrabalho === tipoTrabalho)
@@ -64,22 +66,24 @@ export default function TableProxTrabalhos({ data }: TableProxTrabalhosProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Nome</TableHead>
-              <TableHead>Tema</TableHead>
-              <TableHead>Tipo de Trabalho</TableHead>
-              <TableHead>Próximo Prazo</TableHead>
-              <TableHead>Status</TableHead>
+              <TableHead className="border-r border-gray-100">Nome</TableHead>
+              <TableHead className="border-r border-gray-100">Responsável</TableHead>
+              <TableHead className="border-r border-gray-100">Tema</TableHead>
+              <TableHead className="border-r border-gray-100">Tipo de Trabalho</TableHead>
+              <TableHead className="border-r border-gray-100">Próximo Prazo</TableHead>
+              <TableHead className="border-r border-gray-100">Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {exibData.length > 0 ? (
                           exibData.map((trabalho) => (
                             <TableRow key={trabalho.id} className="hover:cursor-pointer" onClick={() => handleClickRow(trabalho.id)}>
-                              <TableCell>{trabalho.nome}</TableCell>
-                              <TableCell>{trabalho.tema}</TableCell>
-                              <TableCell>{TipoTrabalho[trabalho.tipoTrabalho as keyof typeof TipoTrabalho]}</TableCell>
-                              <TableCell>{corrigirFusoData(trabalho.proxPrazo).toLocaleDateString('pt-BR')}</TableCell>
-                              <TableCell>{EntregaStatus[trabalho.statusEntrega as keyof typeof EntregaStatus]}</TableCell>
+                              <TableCell className="border-r border-gray-100">{trabalho.nome}</TableCell>
+                              <TableCell className="border-r border-gray-100">{trabalho.responsavel.split(' ')[0]}</TableCell>
+                              <TableCell className="border-r border-gray-100">{trabalho.tema}</TableCell>
+                              <TableCell className="border-r border-gray-100">{TipoTrabalho[trabalho.tipoTrabalho as keyof typeof TipoTrabalho]}</TableCell>
+                              <TableCell className="border-r border-gray-100">{corrigirFusoData(trabalho.proxPrazo).toLocaleDateString('pt-BR')}</TableCell>
+                              <TableCell className="border-r border-gray-100">{EntregaStatus[trabalho.statusEntrega as keyof typeof EntregaStatus]}</TableCell>
                             </TableRow>
                           ))
             ) : (<div className="flex h-14 items-center relative left-2">

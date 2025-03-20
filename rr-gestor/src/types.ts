@@ -6,6 +6,7 @@ import { ParcelaStatusType } from "./lib/utils/types/ParcelaStatus";
 export type proxTrabalhosType = {
     id: string;
     nome: string;
+    responsavel: string;
     tema: string;
     tipoTrabalho: string;
     proxPrazo: string;
@@ -25,6 +26,7 @@ export type proxTrabalhosType = {
   export type proxParcelaTrabalhosType = {
     id: string;
     nome: string;
+    responsavel: string;
     tema: string;
     tipoTrabalho: string;
     proxPrazo: string;

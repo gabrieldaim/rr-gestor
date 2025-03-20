@@ -6,11 +6,12 @@ import SelectTipoTrabalho from "@/components/selectTipoTrabalho";
 import { TipoTrabalhoType } from "../types/TipoTrabalho";
 
 interface FilterFormProps {
-  onFilterChange: (filters: { nome: string; tema: string; statusEntrega: EntregaStatusType | "TODOS" , tipoTrabalho: TipoTrabalhoType | "TODOS" }) => void;
+  onFilterChange: (filters: { nome: string; responsavel:String; tema: string; statusEntrega: EntregaStatusType | "TODOS" , tipoTrabalho: TipoTrabalhoType | "TODOS" }) => void;
 }
 
 export default function FilterFormEntregas({ onFilterChange }: FilterFormProps) {
   const [nome, setNome] = useState("");
+  const [responsavel, setResponsavel] = useState("");
   const [tema, setTema] = useState("");
   const [statusEntrega, setStatusEntrega] = useState<EntregaStatusType | "TODOS">("TODOS");
   const [tipoTrabalho, setTipoTrabalho] = useState<TipoTrabalhoType | "TODOS">("TODOS");
@@ -18,13 +19,13 @@ export default function FilterFormEntregas({ onFilterChange }: FilterFormProps) 
 
   // Função para enviar os filtros sempre que um campo mudar
   const handleFilterChange = () => {
-    onFilterChange({ nome, tema, statusEntrega, tipoTrabalho });
+    onFilterChange({ nome, responsavel, tema, statusEntrega, tipoTrabalho });
   };
 
   // useEffect para disparar o handleFilterChange sempre que um dos valores mudar
   useEffect(() => {
     handleFilterChange();
-  }, [nome, tema, statusEntrega, tipoTrabalho]);
+  }, [nome, responsavel, tema, statusEntrega, tipoTrabalho]);
 
   return (
     <div className="flex items-center justify-between gap-4">
@@ -39,6 +40,13 @@ export default function FilterFormEntregas({ onFilterChange }: FilterFormProps) 
     className="flex-1 min-w-32"
     value={nome}
     onChange={(e) => setNome(e.target.value)}
+  />
+    <Input
+    name="responsavel"
+    placeholder="Responsável"
+    className="flex-1 min-w-32"
+    value={responsavel}
+    onChange={(e) => setResponsavel(e.target.value)}
   />
   <Input
     name="tema"

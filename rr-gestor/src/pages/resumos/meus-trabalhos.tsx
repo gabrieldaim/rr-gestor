@@ -34,6 +34,8 @@ export default function MeusTrabalhos() {
       Parece tudo vazio por aqui...</h3>
   </div>}
       <Button className="w-[250px]" onClick={() => navigate("/criar-trabalho")}><Plus></Plus> Criar novo trabalho</Button>
+      <Button className="w-[250px] m-[-30px]" variant="secondary" onClick={() => navigate("/criar-cliente")}><Plus></Plus> Cadastrar novo cliente</Button>
+      
     </div>
   );
 }

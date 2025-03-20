@@ -22,7 +22,7 @@ export default function SelectTipoTrabalho({
 }: SelectTipoTrabalhoProps) {
   return (
     <Select value={value} onValueChange={(val) => onChange(val as TipoTrabalhoType)}>
-      <SelectTrigger className="w-[240px]">
+      <SelectTrigger className="w-[200px]">
         <SelectValue placeholder="Tipos de trabalho" />
       </SelectTrigger>
       <SelectContent>
@@ -30,7 +30,7 @@ export default function SelectTipoTrabalho({
           <SelectLabel>Status da entrega</SelectLabel>
           {includeAllOption && (
             <SelectItem key="TODOS" value="TODOS">
-              Todos os tipos de trabalho
+              Todos os tipos
             </SelectItem>
           )}
           {Object.entries(TipoTrabalho).map(([key, label]) => (

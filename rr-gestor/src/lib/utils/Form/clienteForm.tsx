@@ -333,6 +333,7 @@ export default function ClienteForm({
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
+              <TableHead>Responsável</TableHead>
               <TableHead>Tema</TableHead>
               <TableHead>Tipo de Trabalho</TableHead>
               <TableHead>Próximo Prazo</TableHead>
@@ -344,6 +345,7 @@ export default function ClienteForm({
                           data.map((trabalho) => (
                             <TableRow key={trabalho.id} className="hover:cursor-pointer" onClick={() => handleClickRow(trabalho.id)}>
                               <TableCell>{trabalho.nome}</TableCell>
+                              <TableCell>{trabalho.responsavel}</TableCell>
                               <TableCell>{trabalho.tema}</TableCell>
                               <TableCell>{TipoTrabalho[trabalho.tipoTrabalho as keyof typeof TipoTrabalho]}</TableCell>
                               <TableCell>{corrigirFusoData(trabalho.proxPrazo).toLocaleDateString('pt-BR')}</TableCell>
